@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saúde em Foco Minas | Proposta Executiva</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --green-1: #00C853;
+      --green-2: #00E676;
+      --green-3: #69F0AE;
+      --green-light: #B9F6CA;
+      --black-1: #000000;
+      --black-2: #0a0a0a;
+      --black-3: #111111;
+      --black-4: #1a1a1a;
+      --white: #ffffff;
+      --white-70: rgba(255,255,255,0.7);
+      --white-50: rgba(255,255,255,0.5);
+      --white-30: rgba(255,255,255,0.3);
+      --white-10: rgba(255,255,255,0.1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--black-1);
+      color: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--black-1); }
+    ::-webkit-scrollbar-thumb { background: var(--green-1); border-radius: 3px; }
+
+    /* Utility */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+    .text-gradient {
+      background: linear-gradient(135deg, var(--green-2), var(--green-3), var(--green-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .text-gradient-white {
+      background: linear-gradient(135deg, #fff, rgba(255,255,255,0.8));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    @keyframes heartbeat-line {
+      0% { stroke-dashoffset: 1000; }
+      100% { stroke-dashoffset: 0; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes glow {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(0,200,83,0.4)); }
+      50% { filter: drop-shadow(0 0 20px rgba(0,200,83,0.8)); }
+    }
+    @keyframes scrollDown {
+      0% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(8px); opacity: 0.3; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 16px 0;
+      transition: all 0.4s ease;
+      background: rgba(0,0,0,0.1);
+      backdrop-filter: blur(0px);
+    }
+    nav.scrolled {
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--white-10);
+      padding: 12px 0;
+    }
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .nav-logo svg { height: 32px; width: auto; }
+    .nav-logo span {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--white);
+      letter-spacing: -0.3px;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      color: var(--white-70);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.3s;
+      letter-spacing: 0.2px;
+    }
+    .nav-links a:hover { color: var(--green-2); }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--green-1), var(--green-2));
+      color: var(--black-1) !important;
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-weight: 600 !important;
+      font-size: 13px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .nav-cta:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(0,200,83,0.4);
+    }
+
+    /* Mobile menu */
+    .menu-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+    .menu-toggle span {
+      display: block; width: 24px; height: 2px;
+      background: var(--white); margin: 5px 0;
+      transition: all 0.3s;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      background: radial-gradient(ellipse at 50% 0%, rgba(0,200,83,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 50%, rgba(0,230,118,0.04) 0%, transparent 50%),
+                  linear-gradient(180deg, var(--black-1) 0%, var(--black-2) 100%);
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(0,200,83,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 2; max-width: 900px; padding: 0 20px; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--white-10);
+      border: 1px solid var(--white-10);
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-size: 13px;
+      color: var(--green-3);
+      margin-bottom: 32px;
+      animation: fadeIn 1s ease;
+      backdrop-filter: blur(10px);
+    }
+    .hero-badge .dot {
+      width: 6px; height: 6px;
+      background: var(--green-2);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    .hero-logo {
+      margin-bottom: 40px;
+      animation: fadeIn 1.2s ease, glow 3s ease infinite;
+    }
+    .hero-logo svg { height: 80px; width: auto; }
+    .hero h1 {
+      font-size: clamp(42px, 7vw, 80px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+      animation: fadeInUp 1s ease 0.2s both;
+    }
+    .hero p {
+      font-size: clamp(17px, 2.5vw, 22px);
+      color: var(--white-70);
+      max-width: 650px;
+      margin: 0 auto 48px;
+      line-height: 1.6;
+      font-weight: 300;
+      animation: fadeInUp 1s ease 0.4s both;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 1s ease 0.6s both;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--green-1), var(--green-2));
+      color: var(--black-1);
+      padding: 16px 36px;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(0,200,83,0.4);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--white);
+      padding: 16px 36px;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid var(--white-30);
+      transition: all 0.3s;
+    }
+    .btn-secondary:hover {
+      border-color: var(--green-2);
+      color: var(--green-2);
+      background: rgba(0,230,118,0.05);
+    }
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      animation: scrollDown 2s infinite;
+    }
+    .scroll-indicator span { font-size: 11px; color: var(--white-50); letter-spacing: 2px; text-transform: uppercase; }
+    .scroll-indicator svg { width: 20px; height: 20px; stroke: var(--white-50); }
+
+    /* ===== SECTIONS ===== */
+    section { padding: 140px 0; position: relative; }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--green-2);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 20px;
+    }
+    .section-subtitle {
+      font-size: 18px;
+      color: var(--white-70);
+      max-width: 600px;
+      line-height: 1.6;
+      font-weight: 300;
+    }
+    .section-header { margin-bottom: 80px; }
+    .section-header.center { text-align: center; }
+    .section-header.center .section-subtitle { margin: 0 auto; }
+
+    /* Divider gradient */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--white-10), transparent);
+      margin: 0 auto;
+      max-width: 1200px;
+    }
+
+    /* ===== CONCEITO ===== */
+    .conceito { background: linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 50%, var(--black-2) 100%); }
+    .conceito-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 60px;
+      align-items: center;
+    }
+    .conceito-text h3 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: -0.5px;
+    }
+    .conceito-text p {
+      color: var(--white-70);
+      font-size: 16px;
+      line-height: 1.8;
+      font-weight: 300;
+    }
+    .conceito-cards { display: flex; flex-direction: column; gap: 20px; }
+    .conceito-card {
+      background: linear-gradient(135deg, var(--black-3), var(--black-4));
+      border: 1px solid var(--white-10);
+      border-radius: 20px;
+      padding: 32px;
+      transition: all 0.4s;
+    }
+    .conceito-card:hover {
+      border-color: var(--green-1);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,200,83,0.1);
+    }
+    .conceito-card .icon {
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg, var(--green-1), var(--green-2));
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+    .conceito-card .icon svg { width: 24px; height: 24px; stroke: var(--black-1); fill: none; }
+    .conceito-card h4 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .conceito-card p { font-size: 14px; color: var(--white-50); line-height: 1.6; }
+
+    /* ===== FORMATO ===== */
+    .formato { background: linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 100%); }
+    .formato-specs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+    .spec-card {
+      text-align: center;
+      padding: 40px 24px;
+      background: linear-gradient(135deg, var(--black-3), var(--black-4));
+      border: 1px solid var(--white-10);
+      border-radius: 20px;
+      transition: all 0.4s;
+    }
+    .spec-card:hover {
+      border-color: var(--green-1);
+      box-shadow: 0 0 40px rgba(0,200,83,0.08);
+    }
+    .spec-card .number {
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin-bottom: 4px;
+    }
+    .spec-card .label { font-size: 14px; color: var(--white-50); font-weight: 400; }
+
+    /* Timeline blocks */
+    .blocos-timeline { position: relative; padding-left: 40px; }
+    .blocos-timeline::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--green-1), var(--green-2), transparent);
+    }
+    .bloco-item {
+      position: relative;
+      margin-bottom: 40px;
+      padding: 32px;
+      background: linear-gradient(135deg, var(--black-3), var(--black-4));
+      border: 1px solid var(--white-10);
+      border-radius: 20px;
+      transition: all 0.4s;
+    }
+    .bloco-item:hover {
+      border-color: var(--green-1);
+      transform: translateX(8px);
+    }
+    .bloco-item::before {
+      content: '';
+      position: absolute;
+      left: -33px;
+      top: 38px;
+      width: 12px; height: 12px;
+      background: var(--green-2);
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(0,230,118,0.5);
+    }
+    .bloco-item .bloco-tag {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--green-1), var(--green-2));
+      color: var(--black-1);
+      padding: 4px 14px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .bloco-item h4 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .bloco-item p { color: var(--white-50); font-size: 14px; line-height: 1.6; }
+    .bloco-item .duration { color: var(--green-3); font-weight: 600; font-size: 13px; margin-top: 8px; }
+
+    /* ===== QUADROS ===== */
+    .quadros { background: linear-gradient(180deg, var(--black-1) 0%, var(--black-2) 100%); }
+    .quadros-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    .quadro-card {
+      background: linear-gradient(135deg, var(--black-3), var(--black-4));
+      border: 1px solid var(--white-10);
+      border-radius: 24px;
+      padding: 40px;
+      transition: all 0.5s;
+      position: relative;
+      overflow: hidden;
+    }
+    .quadro-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--green-1), var(--green-2));
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .quadro-card:hover { border-color: var(--green-1); transform: translateY(-6px); }
+    .quadro-card:hover::after { opacity: 1; }
+    .quadro-card .quadro-icon {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, rgba(0,200,83,0.15), rgba(0,230,118,0.05));
+      border: 1px solid rgba(0,200,83,0.2);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .quadro-card .quadro-icon svg { width: 28px; height: 28px; stroke: var(--green-2); fill: none; }
+    .quadro-card h3 { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+    .quadro-card p { color: var(--white-50); font-size: 14px; line-height: 1.7; }
+    .quadro-card .quadro-meta {
+      display: flex;
+      gap: 16px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--white-10);
+    }
+    .quadro-card .quadro-meta span {
+      font-size: 12px;
+      color: var(--green-3);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ===== MODELO DE NEGOCIO ===== */
+    .negocio { background: linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 50%, var(--black-2) 100%); }
+    .cotas-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+    .cota-card {
+      background: linear-gradient(135deg, var(--black-3), var(--black-4));
+      border: 1px solid var(--white-10);
+      border-radius: 24px;
+      padding: 48px 36px;
+      text-align: center;
+      transition: all 0.5s;
+      position: relative;
+    }
+    .cota-card.featured {
+      border-color: var(--green-1);
+      background: linear-gradient(135deg, rgba(0,200,83,0.08), var(--black-3));
+      transform: scale(1.05);
+    }
+    .cota-card.featured::before {
+      content: 'RECOMENDADO';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--green-1), var(--green-2));
+      color: var(--black-1);
+      padding: 4px 20px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .cota-card:hover { border-color: var(--green-1); transform: translateY(-8px); }
+    .cota-card.featured:hover { transform: scale(1.05) translateY(-8px); }
+    .cota-card .cota-tier {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--green-2);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .cota-card h3 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+    .cota-card .price {
+      font-size: 14px;
+      color: var(--white-50);
+      margin-bottom: 32px;
+    }
+    .cota-card .price strong {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--white);
+      display: block;
+      margin-top: 4px;
+    }
+    .cota-card ul {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 32px;
+    }
+    .cota-card ul li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--white-10);
+      font-size: 14px;
+      color: var(--white-70);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .cota-card ul li::before {
+      content: '';
+      width: 18px; height: 18px;
+      min-width: 18px;
+      background: linear-gradient(135deg, var(--green-1), var(--green-2));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+    .cota-card .cota-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.3s;
+      text-align: center;
+    }
+    .cota-card .cota-btn.primary {
+      background: linear-gradient(135deg, var(--green-1), var(--green-2));
+      color: var(--black-1);
+    }
+    .cota-card .cota-btn.secondary {
+      background: transparent;
+      color: var(--white);
+      border: 1px solid var(--white-30);
+    }
+    .cota-card .cota-btn:hover { transform: scale(1.03); box-shadow: 0 8px 30px rgba(0,200,83,0.3); }
+
+    /* Crossmedia */
+    .crossmedia-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .cross-card {
+      background: linear-gradient(135deg, var(--black-3), var(--black-4));
+      border: 1px solid var(--white-10);
+      border-radius: 16px;
+      padding: 28px;
+      text-align: center;
+      transition: all 0.4s;
+    }
+    .cross-card:hover { border-color: var(--green-1); transform: translateY(-4px); }
+    .cross-card .cross-icon { font-size: 32px; margin-bottom: 12px; }
+    .cross-card h4 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+    .cross-card p { font-size: 13px; color: var(--white-50); }
+    .cross-card .cross-value { font-size: 18px; font-weight: 700; color: var(--green-2); margin-top: 8px; }
+
+    /* ===== FINANCEIRO ===== */
+    .financeiro { background: linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 100%); }
+    .fin-highlight {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+    .fin-card {
+      text-align: center;
+      padding: 48px 32px;
+      background: linear-gradient(135deg, var(--black-3), var(--black-4));
+      border: 1px solid var(--white-10);
+      border-radius: 24px;
+      transition: all 0.4s;
+    }
+    .fin-card:hover { border-color: var(--green-1); }
+    .fin-card .fin-value {
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin-bottom: 4px;
+    }
+    .fin-card .fin-label { font-size: 14px; color: var(--white-50); margin-bottom: 16px; }
+    .fin-card .fin-bar {
+      height: 4px;
+      background: var(--white-10);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .fin-card .fin-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green-1), var(--green-2));
+      border-radius: 2px;
+      transition: width 1.5s ease;
+    }
+
+    /* Cenarios */
+    .cenarios-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+    .cenario-card {
+      background: linear-gradient(135deg, var(--black-3), var(--black-4));
+      border: 1px solid var(--white-10);
+      border-radius: 20px;
+      padding: 40px;
+      transition: all 0.4s;
+    }
+    .cenario-card:hover { border-color: var(--green-1); }
+    .cenario-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 24px; }
+    .cenario-card .cenario-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--white-10);
+      font-size: 14px;
+    }
+    .cenario-card .cenario-row .label { color: var(--white-50); }
+    .cenario-card .cenario-row .value { font-weight: 600; }
+    .cenario-card .cenario-row.highlight .value { color: var(--green-2); font-size: 18px; }
+
+    /* ROI */
+    .roi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .roi-card {
+      text-align: center;
+      padding: 32px 20px;
+      background: linear-gradient(135deg, var(--black-3), var(--black-4));
+      border: 1px solid var(--white-10);
+      border-radius: 16px;
+    }
+    .roi-card .roi-value { font-size: 32px; font-weight: 800; margin-bottom: 4px; }
+    .roi-card .roi-label { font-size: 12px; color: var(--white-50); }
+
+    /* ===== DIFERENCIAIS ===== */
+    .diferenciais { background: linear-gradient(180deg, var(--black-1) 0%, var(--black-2) 100%); }
+    .diff-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    .diff-card {
+      background: linear-gradient(135deg, var(--black-3), var(--black-4));
+      border: 1px solid var(--white-10);
+      border-radius: 24px;
+      padding: 48px;
+      transition: all 0.5s;
+      position: relative;
+      overflow: hidden;
+    }
+    .diff-card:hover { border-color: var(--green-1); transform: translateY(-4px); }
+    .diff-card .diff-number {
+      font-size: 72px;
+      font-weight: 900;
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      background: linear-gradient(135deg, rgba(0,200,83,0.1), transparent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+    .diff-card h3 { font-size: 22px; font-weight: 700; margin-bottom: 12px; position: relative; }
+    .diff-card p { color: var(--white-50); font-size: 14px; line-height: 1.7; position: relative; }
+    .diff-card .diff-impact {
+      margin-top: 20px;
+      padding: 16px;
+      background: rgba(0,200,83,0.05);
+      border: 1px solid rgba(0,200,83,0.15);
+      border-radius: 12px;
+      font-size: 13px;
+      color: var(--green-3);
+      position: relative;
+    }
+
+    /* ===== ROADMAP ===== */
+    .roadmap { background: linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 100%); }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .roadmap-card {
+      background: linear-gradient(135deg, var(--black-3), var(--black-4));
+      border: 1px solid var(--white-10);
+      border-radius: 20px;
+      padding: 36px 28px;
+      transition: all 0.4s;
+      position: relative;
+    }
+    .roadmap-card:hover { border-color: var(--green-1); }
+    .roadmap-card .phase-tag {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--green-1), var(--green-2));
+      color: var(--black-1);
+      padding: 4px 14px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+    .roadmap-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .roadmap-card .phase-period { font-size: 13px; color: var(--green-3); margin-bottom: 20px; }
+    .roadmap-card ul { list-style: none; }
+    .roadmap-card ul li {
+      font-size: 13px;
+      color: var(--white-50);
+      padding: 6px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+    .roadmap-card ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 13px;
+      width: 6px; height: 6px;
+      background: var(--green-2);
+      border-radius: 50%;
+    }
+    .roadmap-card .invest {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--white-10);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* ===== METRICAS ===== */
+    .metricas { background: linear-gradient(180deg, var(--black-1) 0%, var(--black-2) 100%); }
+    .metricas-table-wrap {
+      background: linear-gradient(135deg, var(--black-3), var(--black-4));
+      border: 1px solid var(--white-10);
+      border-radius: 24px;
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+    .metricas-table-title {
+      padding: 24px 32px;
+      font-size: 18px;
+      font-weight: 700;
+      border-bottom: 1px solid var(--white-10);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table th {
+      text-align: left;
+      padding: 16px 24px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--green-2);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--white-10);
+    }
+    table td {
+      padding: 16px 24px;
+      font-size: 14px;
+      color: var(--white-70);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    table tr:hover td { background: rgba(0,200,83,0.03); }
+
+    /* ===== CTA FINAL ===== */
+    .cta-final {
+      padding: 160px 0;
+      text-align: center;
+      background: radial-gradient(ellipse at 50% 50%, rgba(0,200,83,0.1) 0%, transparent 60%),
+                  linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 100%);
+    }
+    .cta-final h2 {
+      font-size: clamp(36px, 5vw, 60px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 20px;
+    }
+    .cta-final p {
+      font-size: 18px;
+      color: var(--white-70);
+      max-width: 550px;
+      margin: 0 auto 48px;
+      font-weight: 300;
+    }
+    .cta-final .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .contact-row {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 60px;
+      flex-wrap: wrap;
+    }
+    .contact-item { text-align: center; }
+    .contact-item .contact-label { font-size: 12px; color: var(--white-50); margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
+    .contact-item .contact-value { font-size: 16px; font-weight: 600; color: var(--green-2); }
+    .contact-item a { color: var(--green-2); text-decoration: none; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--white-10);
+      text-align: center;
+    }
+    footer p { font-size: 13px; color: var(--white-30); }
+    footer .footer-logo { margin-bottom: 16px; }
+    footer .footer-logo svg { height: 30px; opacity: 0.5; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .conceito-grid, .cotas-grid, .diff-grid, .cenarios-grid { grid-template-columns: 1fr; }
+      .formato-specs, .crossmedia-grid, .roadmap-grid, .roi-grid { grid-template-columns: repeat(2, 1fr); }
+      .cota-card.featured { transform: none; }
+      .cota-card.featured:hover { transform: translateY(-8px); }
+    }
+    @media (max-width: 768px) {
+      .container { padding: 0 24px; }
+      section { padding: 80px 0; }
+      .nav-links { display: none; }
+      .menu-toggle { display: block; }
+      .formato-specs, .crossmedia-grid, .quadros-grid, .roi-grid { grid-template-columns: 1fr; }
+      .fin-highlight { grid-template-columns: 1fr; }
+      .roadmap-grid { grid-template-columns: 1fr; }
+      .diff-card .diff-number { font-size: 48px; }
+      .hero h1 { letter-spacing: -1px; }
+      .contact-row { gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="container">
+    <a href="#" class="nav-logo">
+      <svg viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 20 L20 20 L28 8 L36 32 L44 8 L52 32 L60 20 L80 20" stroke="url(#logoGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs><linearGradient id="logoGrad" x1="5" y1="20" x2="80" y2="20"><stop stop-color="#00C853"/><stop offset="1" stop-color="#69F0AE"/></linearGradient></defs>
+      </svg>
+      <span>Saúde em Foco Minas</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#conceito">Conceito</a></li>
+      <li><a href="#formato">Formato</a></li>
+      <li><a href="#negocio">Negócio</a></li>
+      <li><a href="#diferenciais">Roadmap</a></li>
+      <li><a href="#diferenciais">Diferenciais</a></li>
+      <li><a href="#contato" class="nav-cta">Fale Conosco</a></li>
+    </ul>
+    <button class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('mobile-open')">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Proposta Executiva 2026
+    </div>
+    <div class="hero-logo">
+      <svg viewBox="0 0 300 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 40 L40 40 L55 15 L70 65 L85 15 L100 65 L115 40 L145 40" stroke="url(#heroGrad)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="155" cy="40" r="5" fill="#00E676"/>
+        <defs><linearGradient id="heroGrad" x1="10" y1="40" x2="145" y2="40"><stop stop-color="#00C853"/><stop offset="0.5" stop-color="#00E676"/><stop offset="1" stop-color="#69F0AE"/></linearGradient></defs>
+      </svg>
+    </div>
+    <h1>Saúde em <span class="text-gradient">Foco</span> Minas</h1>
+    <p>A plataforma de comunicação em saúde mais completa de Minas Gerais. Conteúdo, autoridade e receita em um ecossistema integrado.</p>
+    <div class="hero-buttons">
+      <a href="#negocio" class="btn-primary">Ver Proposta Comercial</a>
+      <a href="#conceito" class="btn-secondary">Saiba Mais</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- CONCEITO -->
+<section class="conceito" id="conceito">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <div class="section-label">Conceito</div>
+      <h2 class="section-title">Não é só um programa.<br><span class="text-gradient">É um ecossistema.</span></h2>
+      <p class="section-subtitle">TV aberta, conteúdo de qualidade e oportunidade comercial reunidos em uma única plataforma.</p>
+    </div>
+    <div class="conceito-grid">
+      <div class="conceito-text animate-on-scroll">
+        <h3>A referência em saúde, tecnologia e bem-estar de Minas Gerais</h3>
+        <p>O Saúde em Foco Minas combina conteúdo educativo de qualidade com um modelo comercial escalável. Um programa semanal de 30 minutos na Band Minas Gerais que funciona como canal educativo, vitrine de autoridade e máquina geradora de receita, tudo ao mesmo tempo.</p>
+        <br>
+        <p>Com alcance de 100% do estado, o programa atinge famílias, profissionais de saúde e decisores que buscam informação confiável e oportunidades de se posicionar como referência no mercado.</p>
+      </div>
+      <div class="conceito-cards">
+        <div class="conceito-card animate-on-scroll">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h4>Público Qualificado</h4>
+          <p>200 a 500 mil telespectadores por edição. Classes A, B e C de todo o estado de Minas Gerais.</p>
+        </div>
+        <div class="conceito-card animate-on-scroll">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h4>Autoridade Imediata</h4>
+          <p>TV aberta confere um selo de confiança que plataformas digitais não conseguem replicar.</p>
+        </div>
+        <div class="conceito-card animate-on-scroll">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <h4>Múltiplas Receitas</h4>
+          <p>Patrocínio Master, cotas de apoio, participações de clínicas, YouTube, redes sociais e eventos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- FORMATO -->
+<section class="formato" id="formato">
+  <div class="container">
+    <div class="section-header center animate-on-scroll">
+      <div class="section-label">Formato</div>
+      <h2 class="section-title">30 minutos que <span class="text-gradient">transformam.</span></h2>
+      <p class="section-subtitle">Programa semanal com estrutura pensada para máximo engajamento e oportunidade comercial.</p>
+    </div>
+
+    <div class="formato-specs animate-on-scroll">
+      <div class="spec-card">
+        <div class="number text-gradient">30</div>
+        <div class="label">Minutos por episódio</div>
+      </div>
+      <div class="spec-card">
+        <div class="number text-gradient">52</div>
+        <div class="label">Episódios por ano</div>
+      </div>
+      <div class="spec-card">
+        <div class="number text-gradient">500k</div>
+        <div class="label">Telespectadores</div>
+      </div>
+      <div class="spec-card">
+        <div class="number text-gradient">100%</div>
+        <div class="label">Cobertura em MG</div>
+      </div>
+    </div>
+
+    <div class="section-header animate-on-scroll">
+      <div class="section-label">Estrutura</div>
+      <h2 class="section-title" style="font-size:36px;">Blocos do Programa</h2>
+    </div>
+
+    <div class="blocos-timeline">
+      <div class="bloco-item animate-on-scroll">
+        <span class="bloco-tag">BLOCO 1</span>
+        <h4>Abertura e Tema Principal</h4>
+        <p>Abertura impactante, tema da semana com informação relevante e entrevista com especialista renomado.</p>
+        <div class="duration">10 minutos de conteúdo</div>
+      </div>
+      <div class="bloco-item animate-on-scroll">
+        <span class="bloco-tag">INTERVALO</span>
+        <h4>Break Comercial</h4>
+        <p>Publicidade direta e chamadas institucionais dos patrocinadores.</p>
+        <div class="duration">3 minutos</div>
+      </div>
+      <div class="bloco-item animate-on-scroll">
+        <span class="bloco-tag">BLOCO 2</span>
+        <h4>Mitos e Verdades + Caso Real</h4>
+        <p>Quadro educativo desmistificando informações de saúde e história real de superação de paciente.</p>
+        <div class="duration">7 minutos de conteúdo</div>
+      </div>
+      <div class="bloco-item animate-on-scroll">
+        <span class="bloco-tag">INTERVALO</span>
+        <h4>Break Comercial + Merchandising</h4>
+        <p>Publicidade e ações de merchandising integradas ao conteúdo.</p>
+        <div class="duration">3 minutos</div>
+      </div>
+      <div class="bloco-item animate-on-scroll">
+        <span class="bloco-tag">BLOCO 3</span>
+        <h4>Tecnologia e Dica Prática</h4>
+        <p>Inovações em saúde, novos equipamentos e tratamentos de ponta. Finaliza com dica de prevenção ou bem-estar.</p>
+        <div class="duration">7 minutos de conteúdo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- QUADROS -->
+<section class="quadros">
+  <div class="container">
+    <div class="section-header center animate-on-scroll">
+      <div class="section-label">Quadros Fixos</div>
+      <h2 class="section-title">Conteúdo que <span class="text-gradient">engaja.</span></h2>
+      <p class="section-subtitle">Quatro quadros semanais que educam o público e criam oportunidades para parceiros.</p>
+    </div>
+
+    <div class="quadros-grid">
+      <div class="quadro-card animate-on-scroll">
+        <div class="quadro-icon">
+          <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h3>Saúde sem Mistério</h3>
+        <p>Traduz termos médicos complexos para linguagem que todo mundo entende. Especialistas se posicionam como educadores confiáveis.</p>
+        <div class="quadro-meta">
+          <span>4 minutos</span>
+          <span>Toda semana</span>
+          <span>Público geral</span>
+        </div>
+      </div>
+
+      <div class="quadro-card animate-on-scroll">
+        <div class="quadro-icon">
+          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h3>Alerta Médico</h3>
+        <p>Foco em prevenção, check-ups sazonais e campanhas de saúde pública. Hospitais e centros de diagnóstico como protagonistas.</p>
+        <div class="quadro-meta">
+          <span>3-4 minutos</span>
+          <span>Toda semana</span>
+          <span>Famílias</span>
+        </div>
+      </div>
+
+      <div class="quadro-card animate-on-scroll">
+        <div class="quadro-icon">
+          <svg viewBox="0 0 24 24" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+        </div>
+        <h3>Tecnologia que Salva</h3>
+        <p>Vitrine para novos equipamentos, cirurgia robótica e IA no diagnóstico. Ideal para fabricantes e clínicas com tecnologia de ponta.</p>
+        <div class="quadro-meta">
+          <span>4 minutos</span>
+          <span>Toda semana</span>
+          <span>Inovação</span>
+        </div>
+      </div>
+
+      <div class="quadro-card animate-on-scroll">
+        <div class="quadro-icon">
+          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h3>Histórias que Inspiram</h3>
+        <p>Depoimentos reais de superação e sucesso no tratamento. Apelo emocional que valida o trabalho médico e institucional.</p>
+        <div class="quadro-meta">
+          <span>3 minutos</span>
+          <span>Toda semana</span>
+          <span>Emocional</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- MODELO DE NEGÓCIO -->
+<section class="negocio" id="negocio">
+  <div class="container">
+    <div class="section-header center animate-on-scroll">
+      <div class="section-label">Modelo de Negócio</div>
+      <h2 class="section-title">Múltiplas portas de <span class="text-gradient">receita.</span></h2>
+      <p class="section-subtitle">Diversificação que garante sustentabilidade e escalabilidade.</p>
+    </div>
+
+    <div class="cotas-grid">
+      <!-- Master -->
+      <div class="cota-card animate-on-scroll">
+        <div class="cota-tier">Exclusivo</div>
+        <h3>Master</h3>
+        <div class="price"><strong>Sob consulta</strong></div>
+        <ul>
+          <li>Exclusividade total por segmento</li>
+          <li>Presença em todos os 52 episódios</li>
+          <li>Vinheta de abertura e encerramento</li>
+          <li>Inserção editorial no Bloco 1</li>
+          <li>Logo em todos os materiais</li>
+          <li>Menção do apresentador por episódio</li>
+        </ul>
+        <a href="#contato" class="cota-btn secondary">Solicitar Proposta</a>
+      </div>
+
+      <!-- Apoio (Featured) -->
+      <div class="cota-card featured animate-on-scroll">
+        <div class="cota-tier">3 Cotas</div>
+        <h3>Apoio</h3>
+        <div class="price"><strong>Sob consulta</strong></div>
+        <ul>
+          <li>Presença nos intervalos comerciais</li>
+          <li>6 minutos de espaço por semana</li>
+          <li>Alternância entre 3 patrocinadores</li>
+          <li>Logo nos créditos e materiais</li>
+          <li>Agradecimento do apresentador</li>
+          <li>Ideal para marcas de bem-estar</li>
+        </ul>
+        <a href="#contato" class="cota-btn primary">Quero Esta Cota</a>
+      </div>
+
+      <!-- Participação -->
+      <div class="cota-card animate-on-scroll">
+        <div class="cota-tier">4-6 por mês</div>
+        <h3>Participação</h3>
+        <div class="price"><strong>Sob consulta</strong></div>
+        <ul>
+          <li>Entrevista de 5 a 7 minutos</li>
+          <li>Exposição da infraestrutura</li>
+          <li>Apresentação de especialista</li>
+          <li>Case de sucesso no ar</li>
+          <li>Logo, telefone e website</li>
+          <li>Possibilidade de repetição mensal</li>
+        </ul>
+        <a href="#contato" class="cota-btn secondary">Agendar Participação</a>
+      </div>
+    </div>
+
+    <!-- Crossmedia -->
+    <div class="section-header center animate-on-scroll" style="margin-top:40px;">
+      <div class="section-label">Expansão</div>
+      <h2 class="section-title" style="font-size:36px;">Crossmedia</h2>
+    </div>
+    <div class="crossmedia-grid animate-on-scroll">
+      <div class="cross-card">
+        <div class="cross-icon">&#9654;</div>
+        <h4>YouTube</h4>
+        <p>Episódios completos + cortes</p>
+        <div class="cross-value">AdSense + Sponsorships</div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-icon">&#9733;</div>
+        <h4>Redes Sociais</h4>
+        <p>Shorts e dicas rápidas</p>
+        <div class="cross-value">Parcerias + Affiliate</div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-icon">&#9741;</div>
+        <h4>Portal</h4>
+        <p>Blog, artigos e webinars</p>
+        <div class="cross-value">Publicidade + Premium</div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-icon">&#9878;</div>
+        <h4>Eventos</h4>
+        <p>Seminários e workshops</p>
+        <div class="cross-value">Ingressos + Patrocínios</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- DIFERENCIAIS -->
+<section class="diferenciais" id="diferenciais">
+  <div class="container">
+    <div class="section-header center animate-on-scroll">
+      <div class="section-label">Diferenciais</div>
+      <h2 class="section-title">Por que este projeto <span class="text-gradient">é único.</span></h2>
+    </div>
+
+    <div class="diff-grid">
+      <div class="diff-card animate-on-scroll">
+        <span class="diff-number">01</span>
+        <h3>Acesso Direto aos Decisores</h3>
+        <p>Sábados de manhã é quando donos de clínicas e decisores de saúde assistem TV. Contato direto com quem decide.</p>
+        <div class="diff-impact">Nenhum outro canal em MG oferece acesso tão qualificado a este público.</div>
+      </div>
+      <div class="diff-card animate-on-scroll">
+        <span class="diff-number">02</span>
+        <h3>Conteúdo + Comercial Integrados</h3>
+        <p>Integração natural de marcas ao conteúdo, sem cara de propaganda. Maior receptividade e menor resistência do público.</p>
+        <div class="diff-impact">Efetividade muito superior à publicidade tradicional.</div>
+      </div>
+      <div class="diff-card animate-on-scroll">
+        <span class="diff-number">03</span>
+        <h3>TV Aberta = Credibilidade</h3>
+        <p>A TV aberta confere um selo de confiança que nenhuma plataforma digital consegue replicar. Autoridade instantânea.</p>
+        <div class="diff-impact">Clínicas que participam ganham credibilidade imediata junto ao público.</div>
+      </div>
+      <div class="diff-card animate-on-scroll">
+        <span class="diff-number">04</span>
+        <h3>Modelo Escalável</h3>
+        <p>Múltiplas portas de entrada permitem que diferentes tipos de negócios encontrem oportunidades. Receita estável e previsível.</p>
+        <div class="diff-impact">Barreira de entrada alta: posição defensável por 3 a 5 anos.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ROADMAP -->
+<section class="roadmap">
+  <div class="container">
+    <div class="section-header center animate-on-scroll">
+      <div class="section-label">Roadmap</div>
+      <h2 class="section-title">O caminho até o <span class="text-gradient">lançamento.</span></h2>
+    </div>
+
+    <div class="roadmap-grid">
+      <div class="roadmap-card animate-on-scroll">
+        <span class="phase-tag">FASE 1</span>
+        <h3>Estruturação</h3>
+        <div class="phase-period">Meses 1-2</div>
+        <ul>
+          <li>Contrato com Band Minas</li>
+          <li>Definição do apresentador</li>
+          <li>Pré-venda de cotas</li>
+          <li>Identidade visual</li>
+          <li>Website e mídia kit</li>
+        </ul>
+        <div class="invest"></div>
+      </div>
+
+      <div class="roadmap-card animate-on-scroll">
+        <span class="phase-tag">FASE 2</span>
+        <h3>Produção</h3>
+        <div class="phase-period">Meses 3-4</div>
+        <ul>
+          <li>4 episódios piloto</li>
+          <li>Testes de transmissão</li>
+          <li>Treinamento da equipe</li>
+          <li>Venda de cotas de apoio</li>
+          <li>Recrutamento de especialistas</li>
+        </ul>
+        <div class="invest"></div>
+      </div>
+
+      <div class="roadmap-card animate-on-scroll">
+        <span class="phase-tag">FASE 3</span>
+        <h3>Lançamento</h3>
+        <div class="phase-period">Mês 5</div>
+        <ul>
+          <li>Episódio 1 ao vivo</li>
+          <li>Campanha de marketing</li>
+          <li>Ativação de redes sociais</li>
+          <li>YouTube e Instagram</li>
+          <li>Coleta de métricas</li>
+        </ul>
+        <div class="invest"></div>
+      </div>
+
+      <div class="roadmap-card animate-on-scroll">
+        <span class="phase-tag">FASE 4</span>
+        <h3>Escala</h3>
+        <div class="phase-period">Mês 6+</div>
+        <ul>
+          <li>Otimização contínua</li>
+          <li>Expansão digital</li>
+          <li>Mais participações</li>
+          <li>Eventos presenciais</li>
+          <li>Novos formatos</li>
+        </ul>
+        <div class="invest"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- MÉTRICAS -->
+<section class="metricas">
+  <div class="container">
+    <div class="section-header center animate-on-scroll">
+      <div class="section-label">Métricas</div>
+      <h2 class="section-title">Como medimos o <span class="text-gradient">sucesso.</span></h2>
+    </div>
+
+    <div class="metricas-table-wrap animate-on-scroll">
+      <div class="metricas-table-title">KPIs de Audiência (TV)</div>
+      <table>
+        <thead><tr><th>Métrica</th><th>Mês 1</th><th>Mês 6</th><th>Ano 1</th></tr></thead>
+        <tbody>
+          <tr><td>Audiência Média</td><td>150k</td><td>250k</td><td>350k</td></tr>
+          <tr><td>Share (%)</td><td>8%</td><td>12%</td><td>15%</td></tr>
+          <tr><td>Retenção (%)</td><td>70%</td><td>75%</td><td>80%</td></tr>
+          <tr><td>Satisfação</td><td>7.5/10</td><td>8.0/10</td><td>8.5/10</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="metricas-table-wrap animate-on-scroll">
+      <div class="metricas-table-title">KPIs Comerciais</div>
+      <table>
+        <thead><tr><th>Métrica</th><th>Mês 1</th><th>Mês 6</th><th>Ano 1</th></tr></thead>
+        <tbody>
+          <tr><td>Taxa de Ocupação</td><td>50%</td><td>80%</td><td>95%</td></tr>
+          <tr><td>Retenção de Clientes</td><td>80%</td><td>90%</td><td>95%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="metricas-table-wrap animate-on-scroll">
+      <div class="metricas-table-title">KPIs Digitais</div>
+      <table>
+        <thead><tr><th>Métrica</th><th>Mês 1</th><th>Mês 6</th><th>Ano 1</th></tr></thead>
+        <tbody>
+          <tr><td>Views YouTube</td><td>50k</td><td>500k</td><td>2M+</td></tr>
+          <tr><td>Followers Instagram</td><td>5k</td><td>50k</td><td>150k+</td></tr>
+          <tr><td>Visitantes Website</td><td>10k</td><td>50k</td><td>200k+</td></tr>
+          <tr><td>Leads Capturados</td><td>500</td><td>5k</td><td>20k+</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- CTA FINAL -->
+<section class="cta-final" id="contato">
+  <div class="container">
+    <div class="animate-on-scroll">
+      <div class="section-label">Próximo Passo</div>
+      <h2>Pronto para fazer parte<br>da <span class="text-gradient">referência em saúde</span> de MG?</h2>
+      <p>Uma oportunidade única de criar a maior plataforma de comunicação em saúde do estado. Vamos conversar.</p>
+      <div class="cta-buttons">
+        <a href="mailto:contato@saudeemfocominas.com.br" class="btn-primary">Solicitar Proposta Completa</a>
+        <a href="tel:+5511995545900" class="btn-secondary">Agendar Reunião</a>
+      </div>
+      <div class="contact-row">
+        <div class="contact-item">
+          <div class="contact-label">Email</div>
+          <div class="contact-value"><a href="mailto:contato@saudeemfocominas.com.br">contato@saudeemfocominas.com.br</a></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-label">Telefone</div>
+          <div class="contact-value"><a href="tel:+5511995545900">(11) 99554-5900</a></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-label">Instagram</div>
+          <div class="contact-value">@saudeemfocominas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-logo">
+      <svg viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 20 L20 20 L28 8 L36 32 L44 8 L52 32 L60 20 L80 20" stroke="url(#footGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs><linearGradient id="footGrad" x1="5" y1="20" x2="80" y2="20"><stop stop-color="#00C853"/><stop offset="1" stop-color="#69F0AE"/></linearGradient></defs>
+      </svg>
+    </div>
+    <p>Saúde em Foco Minas &copy; 2026. Todos os direitos reservados.</p>
+    <p style="margin-top:8px;">Versão 1.0 | Proposta Executiva Pronta para Investimento</p>
+  </div>
+</footer>
+
+<!-- JS -->
+<script>
+  // Navbar scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
