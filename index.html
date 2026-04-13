@@ -177,6 +177,16 @@
                   linear-gradient(180deg, var(--black-1) 0%, var(--black-2) 100%);
       overflow: hidden;
     }
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: url('https://images.unsplash.com/photo-1584515933487-779824d29309?w=1920&q=80') center/cover no-repeat;
+      opacity: 0.08;
+      pointer-events: none;
+      z-index: 0;
+    }
     .hero::before {
       content: '';
       position: absolute;
@@ -322,7 +332,21 @@
     }
 
     /* ===== CONCEITO ===== */
-    .conceito { background: linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 50%, var(--black-2) 100%); }
+    .conceito {
+      background: linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 50%, var(--black-2) 100%);
+      position: relative;
+    }
+    .conceito::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: url('https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=1920&q=80') center/cover no-repeat;
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .conceito > * { position: relative; z-index: 1; }
     .conceito-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -366,7 +390,21 @@
     .conceito-card p { font-size: 14px; color: var(--white-50); line-height: 1.6; }
 
     /* ===== FORMATO ===== */
-    .formato { background: linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 100%); }
+    .formato {
+      background: linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 100%);
+      position: relative;
+    }
+    .formato::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=1920&q=80') center/cover no-repeat;
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .formato > * { position: relative; z-index: 1; }
     .formato-specs {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
