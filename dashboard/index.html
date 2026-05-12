@@ -1,0 +1,2515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOCO em SAUDE Minas — Dashboard Interativo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --verde:       #00A878;
+  --azul:        #1B4F72;
+  --branco:      #FFFFFF;
+  --cinza-claro: #F5F7FA;
+  --cinza-medio: #E8ECF0;
+  --cinza-texto: #6B7280;
+  --verde-claro: #D5F5E3;
+  --amarelo:     #FFF3CD;
+  --vermelho:    #FADBD8;
+  --azul-claro:  #D6EAF8;
+  --laranja:     #FDEBD0;
+  --sidebar-w:   240px;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cinza-claro);
+  color: #1F2937;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--azul);
+  position: fixed;
+  top: 0; left: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+.sidebar-logo {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.sidebar-logo h2 {
+  font-family: 'Playfair Display', serif;
+  color: #FFFFFF;
+  font-size: 15px;
+  line-height: 1.3;
+}
+.sidebar-logo span {
+  display: block;
+  color: var(--verde);
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.sidebar nav { flex: 1; padding: 16px 0; }
+.nav-section {
+  padding: 8px 20px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  color: rgba(255,255,255,0.75);
+  font-size: 13.5px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+}
+.nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.nav-item.active { background: rgba(0,168,120,0.15); color: var(--verde); border-left-color: var(--verde); font-weight: 600; }
+.nav-icon { font-size: 15px; width: 18px; text-align: center; }
+
+/* MAIN */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  padding: 32px;
+  max-width: calc(100vw - var(--sidebar-w));
+}
+.section { display: none; animation: fadeIn 0.25s ease; }
+.section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* TYPOGRAPHY */
+h1 { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--azul); margin-bottom: 6px; }
+h2 { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--azul); margin-bottom: 12px; margin-top: 28px; }
+h3 { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--azul); margin-bottom: 8px; }
+.subtitle { color: var(--cinza-texto); font-size: 14px; margin-bottom: 28px; }
+
+/* CARDS */
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+.card { background: var(--branco); border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.card-metric { border-top: 3px solid var(--verde); }
+.card-metric .label { font-size: 11px; font-weight: 600; color: var(--cinza-texto); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.card-metric .value { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--azul); font-weight: 700; }
+.card-metric .sub { font-size: 12px; color: var(--cinza-texto); margin-top: 4px; }
+
+/* TABLES */
+.table-wrap { overflow-x: auto; margin-bottom: 20px; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; background: var(--branco); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+thead tr { background: var(--azul); }
+thead th { padding: 11px 14px; text-align: left; font-size: 12px; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: 0.4px; }
+tbody tr:nth-child(even) { background: var(--cinza-claro); }
+tbody tr:hover { background: var(--azul-claro); }
+tbody td { padding: 10px 14px; border-bottom: 1px solid var(--cinza-medio); vertical-align: middle; }
+tfoot tr { background: var(--verde-claro); font-weight: 600; }
+tfoot td { padding: 11px 14px; }
+
+/* BADGES */
+.badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+.badge-verde    { background: var(--verde-claro); color: #155724; }
+.badge-amarelo  { background: var(--amarelo); color: #856404; }
+.badge-vermelho { background: var(--vermelho); color: #842029; }
+.badge-azul     { background: var(--azul-claro); color: var(--azul); }
+.badge-cinza    { background: var(--cinza-medio); color: #4B5563; }
+.badge-laranja  { background: var(--laranja); color: #7D3C0C; }
+
+/* PROGRESS */
+.progress-wrap { margin: 8px 0; }
+.progress-label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 13px; }
+.progress-bar { height: 8px; background: var(--cinza-medio); border-radius: 20px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 20px; background: var(--verde); transition: width 0.8s ease; }
+
+/* ALERTAS */
+.alerta { display: flex; align-items: flex-start; gap: 12px; padding: 13px 16px; border-radius: 8px; margin-bottom: 10px; font-size: 13.5px; }
+.alerta-vermelho { background: var(--vermelho); border-left: 4px solid #C0392B; }
+.alerta-amarelo  { background: var(--amarelo);  border-left: 4px solid #F39C12; }
+.alerta-verde    { background: var(--verde-claro); border-left: 4px solid var(--verde); }
+.alerta-icon { font-size: 18px; flex-shrink: 0; }
+
+/* FASE CARDS */
+.fase-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.fase-card { background: var(--branco); border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-top: 3px solid var(--cinza-medio); }
+.fase-card.atual { border-top-color: var(--verde); }
+.fase-card h3 { color: var(--azul); margin-bottom: 4px; }
+.fase-card .periodo { color: var(--cinza-texto); font-size: 12px; margin-bottom: 12px; }
+.fase-card ul { list-style: none; }
+.fase-card ul li { font-size: 13px; padding: 4px 0; display: flex; align-items: flex-start; gap: 8px; }
+.fase-card ul li::before { content: "☐"; color: var(--cinza-texto); }
+.fase-card ul li.done::before { content: "☑"; color: var(--verde); }
+
+/* KANBAN */
+.kanban-wrap { overflow-x: auto; }
+.kanban { display: flex; gap: 14px; margin-bottom: 24px; min-width: 900px; }
+.kanban-col { background: var(--cinza-claro); border-radius: 10px; padding: 14px; flex: 1; min-width: 180px; }
+.kanban-col-header { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--azul); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--cinza-medio); display: flex; justify-content: space-between; align-items: center; }
+.kanban-count { background: var(--azul); color: #fff; border-radius: 20px; padding: 1px 7px; font-size: 11px; }
+.kanban-card { background: var(--branco); border-radius: 8px; padding: 12px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-size: 13px; cursor: grab; transition: box-shadow 0.15s; }
+.kanban-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.kanban-card strong { display: block; color: var(--azul); margin-bottom: 3px; font-size: 13px; }
+.kanban-card span { color: var(--cinza-texto); font-size: 12px; }
+.kanban-card .k-valor { color: var(--verde); font-weight: 600; font-size: 12px; display: block; margin-top: 4px; }
+.kanban-card .k-followup { font-size: 11px; color: #E67E22; margin-top: 3px; display: block; }
+.kanban-col.drag-over { background: var(--azul-claro); }
+
+/* SECTION HEADER COM BOTAO */
+.section-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+.section-header-left h1 { margin-bottom: 4px; }
+
+/* BOTOES */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+.btn-primary { background: var(--verde); color: #fff; }
+.btn-primary:hover { background: #008f65; }
+.btn-secondary { background: var(--cinza-medio); color: #374151; }
+.btn-secondary:hover { background: #d1d5db; }
+.btn-danger { background: var(--vermelho); color: #842029; }
+.btn-danger:hover { background: #f1aeb5; }
+.btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 4px; }
+.btn-icon { padding: 5px 8px; font-size: 13px; border-radius: 4px; border: none; cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+.btn-edit { background: var(--azul-claro); color: var(--azul); }
+.btn-edit:hover { background: #b8d4eb; }
+.btn-delete { background: var(--vermelho); color: #842029; }
+.btn-delete:hover { background: #f1aeb5; }
+.action-btns { display: flex; gap: 5px; }
+
+/* FILTROS */
+.filtros { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.filtro-select { padding: 8px 12px; border-radius: 6px; border: 1px solid var(--cinza-medio); font-size: 13px; background: var(--branco); color: #374151; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--branco);
+  border-radius: 12px;
+  padding: 28px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+.modal h3 { font-family: 'Playfair Display', serif; color: var(--azul); font-size: 20px; margin-bottom: 20px; }
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--cinza-medio); border: none; border-radius: 50%;
+  width: 30px; height: 30px; cursor: pointer;
+  font-size: 16px; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.modal-close:hover { background: var(--vermelho); color: #842029; }
+.modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--cinza-medio); }
+
+/* FORM */
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 5px; }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--cinza-medio);
+  border-radius: 6px;
+  font-size: 13.5px;
+  font-family: 'DM Sans', sans-serif;
+  color: #1F2937;
+  background: var(--branco);
+  transition: border-color 0.15s;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--verde);
+  box-shadow: 0 0 0 3px rgba(0,168,120,0.1);
+}
+.form-group textarea { resize: vertical; min-height: 80px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-group.required label::after { content: " *"; color: #C0392B; }
+.field-error { border-color: #C0392B !important; }
+.error-msg { font-size: 12px; color: #C0392B; margin-top: 4px; display: none; }
+.error-msg.show { display: block; }
+
+/* INLINE SELECT */
+.inline-select {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--cinza-medio);
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--branco);
+  cursor: pointer;
+}
+
+/* MISC */
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 900px) { .row-2 { grid-template-columns: 1fr; } }
+.divider { height: 1px; background: var(--cinza-medio); margin: 24px 0; }
+.fase-pill { display: inline-flex; align-items: center; gap: 8px; background: var(--verde); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+.empty-state { text-align: center; padding: 40px 20px; color: var(--cinza-texto); font-size: 14px; }
+
+/* ORGANOGRAMA */
+.org-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; margin: 20px 0; }
+.org-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.org-box { background: var(--branco); border: 2px solid var(--cinza-medio); border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 140px; font-size: 13px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.org-box.centro { border-color: var(--verde); background: var(--verde); color: #fff; font-weight: 600; }
+.org-box span { display: block; font-size: 11px; color: var(--cinza-texto); margin-top: 2px; }
+.org-box.centro span { color: rgba(255,255,255,0.75); }
+.org-linha { width: 2px; height: 20px; background: var(--cinza-medio); margin: 0 auto; }
+
+/* FINANCEIRO CHART */
+.bar-chart { display: flex; gap: 20px; align-items: flex-end; height: 180px; margin: 20px 0; }
+.bar-group { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+.bar-group .bar-label { font-size: 12px; color: var(--cinza-texto); text-align: center; }
+.bar-group .bar-value { font-size: 13px; font-weight: 600; color: var(--azul); }
+.bar { width: 100%; border-radius: 6px 6px 0 0; }
+.bar-receita { background: var(--verde); height: 160px; }
+.bar-custo   { background: #E74C3C; height: 102px; }
+.bar-result  { background: var(--azul); height: 58px; }
+
+/* CONFIG */
+.config-card { background: var(--branco); border-radius: 10px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; }
+.reset-area { background: var(--vermelho); border-radius: 10px; padding: 20px; margin-top: 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.reset-area p { font-size: 13.5px; color: #842029; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--azul); color: #fff;
+  padding: 12px 20px; border-radius: 8px;
+  font-size: 14px; font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  z-index: 2000;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  max-width: 320px;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { background: var(--verde); }
+.toast.error { background: #C0392B; }
+
+/* DOCS */
+.docs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.doc-card { background: var(--branco); border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; gap: 14px; align-items: flex-start; }
+.doc-icon { font-size: 28px; }
+.doc-info { flex: 1; }
+.doc-info strong { display: block; font-size: 14px; color: var(--azul); margin-bottom: 2px; }
+.doc-info .caminho { font-size: 11px; color: var(--verde); font-family: monospace; margin-bottom: 4px; }
+.doc-info .desc { font-size: 12.5px; color: var(--cinza-texto); }
+
+/* PRICING TABLE EDITAVEL */
+.section-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; margin-top: 28px; }
+.section-header-row h3 { margin: 0; }
+.editable-cell {
+  border: none;
+  background: transparent;
+  width: 100%;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+.editable-cell:hover, .editable-cell:focus {
+  background: #f0f7ff;
+  outline: 1px solid #1B4F72;
+}
+.valor-cell { font-weight: 600; color: #1B4F72; }
+.btn-save {
+  background: #00A878; color: white; border: none;
+  padding: 8px 16px; border-radius: 6px; cursor: pointer;
+  font-weight: 600; display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px;
+}
+.btn-save:hover { background: #008f65; }
+.btn-add {
+  background: var(--azul-claro); color: var(--azul); border: none;
+  padding: 8px 16px; border-radius: 6px; cursor: pointer;
+  font-weight: 600; font-family: 'DM Sans', sans-serif; font-size: 13px;
+  margin-top: 8px; transition: background 0.15s;
+}
+.btn-add:hover { background: #b8d4eb; }
+.btn-delete-small {
+  background: none; border: none; cursor: pointer;
+  font-size: 14px; opacity: 0.6; transition: opacity 0.2s;
+}
+.btn-delete-small:hover { opacity: 1; }
+.calc-locked {
+  display:inline-block;padding:4px 6px;
+  background:var(--cinza-medio);border-radius:4px;
+  color:var(--cinza-texto);font-size:inherit;font-family:inherit;
+  cursor:not-allowed;width:100%;
+}
+
+@media (max-width: 768px) {
+  :root { --sidebar-w: 0px; }
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 16px; max-width: 100vw; }
+}
+
+[contenteditable="true"] {
+  border-radius: 3px;
+  padding: 2px 4px;
+  transition: background 0.15s;
+  outline: none;
+  min-width: 20px;
+  display: inline-block;
+}
+[contenteditable="true"]:hover {
+  background: rgba(0,168,120,0.08);
+  cursor: text;
+}
+[contenteditable="true"]:focus {
+  background: #f0f7ff;
+  outline: 1px solid #1B4F72;
+}
+.secao-editavel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.lock-icon { font-size: 12px; color: var(--cinza-texto); margin-left: 6px; opacity: 0.6; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h2>FOCO em SAUDE<br>Minas</h2>
+    <span>Dashboard Interativo</span>
+  </div>
+  <nav>
+    <div class="nav-section">Visao Geral</div>
+    <div class="nav-item active" onclick="showSection('dashboard')"><span class="nav-icon">📊</span> Dashboard</div>
+    <div class="nav-item" onclick="showSection('roadmap')"><span class="nav-icon">🗺️</span> Roadmap</div>
+    <div class="nav-item" onclick="showSection('business-plan')"><span class="nav-icon">📋</span> Business Plan</div>
+    <div class="nav-section">Numeros</div>
+    <div class="nav-item" onclick="showSection('financeiro')"><span class="nav-icon">💰</span> Financeiro</div>
+    <div class="nav-item" onclick="showSection('pipeline')"><span class="nav-icon">🤝</span> Pipeline Comercial</div>
+    <div class="nav-item" onclick="showSection('servicos')" id="nav-servicos"><span class="nav-icon">💼</span> Servicos Digitais</div>
+    <div class="nav-section">Operacao</div>
+    <div class="nav-item" onclick="showSection('producao')"><span class="nav-icon">🎬</span> Producao</div>
+    <div class="nav-item" onclick="showSection('equipe')"><span class="nav-icon">👥</span> Equipe</div>
+    <div class="nav-section">Resultados</div>
+    <div class="nav-item" onclick="showSection('kpis')"><span class="nav-icon">📈</span> KPIs</div>
+    <div class="nav-item" onclick="showSection('configuracoes')"><span class="nav-icon">⚙️</span> Configuracoes</div>
+    <div class="nav-section">Suporte</div>
+    <div class="nav-item" onclick="showSection('ajuda')"><span class="nav-icon">❓</span> Ajuda / Manual</div>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ═══════ SECAO 1: DASHBOARD ═══════ -->
+<section class="section active" id="dashboard">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h1>Dashboard Executivo</h1>
+      <p class="subtitle">FOCO em SAUDE Minas — Band Minas Gerais | Visao geral do negocio</p>
+    </div>
+  </div>
+
+  <div class="cards-grid" id="dash-metricas"></div>
+
+  <div class="card" style="margin-bottom:20px;" id="dash-fase-card"></div>
+
+  <h2>Proximos Marcos Criticos</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Marco</th><th>Prazo</th><th>Prioridade</th><th>Status</th></tr></thead>
+      <tbody id="dash-marcos-tbody"></tbody>
+    </table>
+  </div>
+
+  <h2>Alertas de Acao Prioritaria</h2>
+  <div id="dash-alertas"></div>
+
+  <h2>Pipeline — Resumo por Estagio</h2>
+  <div class="cards-grid" id="dash-pipeline-resumo"></div>
+</section>
+
+<!-- ═══════ SECAO 2: ROADMAP ═══════ -->
+<section class="section" id="roadmap">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h1>Roadmap</h1>
+      <p class="subtitle">4 fases de implementacao para lancar e escalar o programa</p>
+    </div>
+  </div>
+  <div class="fase-cards">
+    <div class="fase-card atual">
+      <h3>Fase 1</h3>
+      <div class="periodo" contenteditable="true" data-ek="rm-f1-periodo">Meses 1 e 2 — Estruturacao</div>
+      <span class="badge badge-amarelo" style="margin-bottom:12px;" contenteditable="true" data-ek="rm-f1-badge">Em Andamento</span>
+      <ul>
+        <li contenteditable="true" data-ek="rm-f1-li1">Contrato com a Band Minas Gerais</li>
+        <li contenteditable="true" data-ek="rm-f1-li2">Abertura do CNPJ (produtora)</li>
+        <li contenteditable="true" data-ek="rm-f1-li3">Contratacao do apresentador(a)</li>
+        <li contenteditable="true" data-ek="rm-f1-li4">Identidade visual completa</li>
+        <li contenteditable="true" data-ek="rm-f1-li5">Midia kit profissional</li>
+        <li contenteditable="true" data-ek="rm-f1-li6">Pre-venda Cota Master</li>
+        <li contenteditable="true" data-ek="rm-f1-li7">Site institucional e redes sociais</li>
+      </ul>
+    </div>
+    <div class="fase-card">
+      <h3>Fase 2</h3>
+      <div class="periodo" contenteditable="true" data-ek="rm-f2-periodo">Meses 3 e 4 — Pre-producao</div>
+      <span class="badge badge-cinza" style="margin-bottom:12px;" contenteditable="true" data-ek="rm-f2-badge">Pendente</span>
+      <ul>
+        <li contenteditable="true" data-ek="rm-f2-li1">4 episodios piloto gravados</li>
+        <li contenteditable="true" data-ek="rm-f2-li2">Equipe tecnica completa contratada</li>
+        <li contenteditable="true" data-ek="rm-f2-li3">Testes de transmissao realizados</li>
+        <li contenteditable="true" data-ek="rm-f2-li4">Venda de cotas de apoio</li>
+        <li contenteditable="true" data-ek="rm-f2-li5">Estudio definitivo definido e equipado</li>
+      </ul>
+    </div>
+    <div class="fase-card">
+      <h3>Fase 3</h3>
+      <div class="periodo" contenteditable="true" data-ek="rm-f3-periodo">Mes 5 — Lancamento</div>
+      <span class="badge badge-cinza" style="margin-bottom:12px;" contenteditable="true" data-ek="rm-f3-badge">Aguardando</span>
+      <ul>
+        <li contenteditable="true" data-ek="rm-f3-li1">Episodio 1 ao vivo (Band Minas)</li>
+        <li contenteditable="true" data-ek="rm-f3-li2">Campanha de lancamento ativa</li>
+        <li contenteditable="true" data-ek="rm-f3-li3">Canal YouTube ativado</li>
+        <li contenteditable="true" data-ek="rm-f3-li4">Instagram com conteudo regular</li>
+        <li contenteditable="true" data-ek="rm-f3-li5">Metricas de audiencia baseline coletadas</li>
+      </ul>
+    </div>
+    <div class="fase-card">
+      <h3>Fase 4</h3>
+      <div class="periodo" contenteditable="true" data-ek="rm-f4-periodo">Mes 6 em diante — Crescimento</div>
+      <span class="badge badge-cinza" style="margin-bottom:12px;" contenteditable="true" data-ek="rm-f4-badge">Aguardando</span>
+      <ul>
+        <li contenteditable="true" data-ek="rm-f4-li1">Expansao do conteudo digital</li>
+        <li contenteditable="true" data-ek="rm-f4-li2">Primeiro evento presencial</li>
+        <li contenteditable="true" data-ek="rm-f4-li3">Novos formatos de conteudo</li>
+        <li contenteditable="true" data-ek="rm-f4-li4">Revisao e renovacao de contratos</li>
+        <li contenteditable="true" data-ek="rm-f4-li5">Meta: 80% de ocupacao (break-even)</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Marcos Criticos — Gestao</h2>
+  <div style="margin-bottom:12px;">
+    <button class="btn btn-primary btn-sm" onclick="openModalMarco(null)">+ Novo Marco</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Marco</th><th>Prazo</th><th>Prioridade</th><th>Status</th><th>Acoes</th></tr></thead>
+      <tbody id="marcos-tbody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════ SECAO 3: BUSINESS PLAN ═══════ -->
+<section class="section" id="business-plan">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h1>Business Plan</h1>
+      <p class="subtitle">Resumo estrategico do modelo de negocio</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:20px;">
+    <h3>Proposta de Valor</h3>
+    <p style="font-size:14px;line-height:1.7;color:#374151;" contenteditable="true" data-ek="bp-proposta">O FOCO em SAUDE Minas e o unico talk show semanal de saude da Band Minas Gerais, combinando credibilidade televisiva com alcance digital. Oferecemos a patrocinadores acesso a uma audiencia qualificada de 150.000 a 350.000 espectadores por episodio, com cobertura de 100% do estado de Minas Gerais, em um formato editorial que gera atencao genuina, nao apenas tolerancia ao anuncio.</p>
+  </div>
+
+  <div class="row-2">
+    <div>
+      <h2>Mercado-alvo</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Publico</th><th>Perfil</th></tr></thead>
+          <tbody>
+            <tr><td contenteditable="true" data-ek="bp-m1a">Audiencia TV</td><td contenteditable="true" data-ek="bp-m1b">Adultos 30-65 anos, classes A e B, interesse em saude, cobertura MG</td></tr>
+            <tr><td contenteditable="true" data-ek="bp-m2a">Anunciantes</td><td contenteditable="true" data-ek="bp-m2b">Hospitais, planos, clinicas, laboratorios, farmacias, med-tech</td></tr>
+            <tr><td contenteditable="true" data-ek="bp-m3a">Convidados</td><td contenteditable="true" data-ek="bp-m3b">Medicos especialistas de MG com presenca na Band como autoridade</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="section-header-row">
+        <h2 style="margin:0;">Tabela de Precos</h2>
+        <button onclick="savePricing()" class="btn-save" id="btn-save-pricing" style="display:none">&#128190; Salvar alteracoes</button>
+      </div>
+      <div class="table-wrap">
+        <table class="pricing-table" id="pricing-table">
+          <thead>
+            <tr>
+              <th>Servico / Cota</th>
+              <th>Valor</th>
+              <th>Formato</th>
+              <th>Entregas / Descricao</th>
+              <th style="width:40px;"></th>
+            </tr>
+          </thead>
+          <tbody id="pricing-tbody">
+            <!-- Gerado por JS com dados do localStorage -->
+          </tbody>
+        </table>
+      </div>
+      <button onclick="addPricingRow()" class="btn-add">+ Adicionar item</button>
+    </div>
+  </div>
+
+  <h2>Diferenciais Competitivos</h2>
+  <div class="card" style="margin-bottom:20px;">
+    <ul style="list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <li style="font-size:13.5px;padding:8px 0;border-bottom:1px solid var(--cinza-medio);" contenteditable="true" data-ek="bp-dif1">&#x2714; TV aberta + digital em uma unica cota</li>
+      <li style="font-size:13.5px;padding:8px 0;border-bottom:1px solid var(--cinza-medio);" contenteditable="true" data-ek="bp-dif2">&#x2714; Unico programa de saude semanal em MG</li>
+      <li style="font-size:13.5px;padding:8px 0;border-bottom:1px solid var(--cinza-medio);" contenteditable="true" data-ek="bp-dif3">&#x2714; Formato editorial (nao apenas publicidade)</li>
+      <li style="font-size:13.5px;padding:8px 0;border-bottom:1px solid var(--cinza-medio);" contenteditable="true" data-ek="bp-dif4">&#x2714; Exclusividade de segmento para Cota Master</li>
+      <li style="font-size:13.5px;padding:8px 0;" contenteditable="true" data-ek="bp-dif5">&#x2714; Equipe especializada em saude e comunicacao</li>
+      <li style="font-size:13.5px;padding:8px 0;" contenteditable="true" data-ek="bp-dif6">&#x2714; 52 episodios por ano, audiencia recorrente</li>
+    </ul>
+  </div>
+
+  <h2>Riscos e Mitigacoes</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Risco</th><th>Probabilidade</th><th>Mitigacao</th></tr></thead>
+      <tbody>
+        <tr><td contenteditable="true" data-ek="bp-r1a">Dificuldade de fechar Cota Master</td><td contenteditable="true" data-ek="bp-r1b">Media</td><td contenteditable="true" data-ek="bp-r1c">Prospectar desde o Mes 1; ter plano B com 2 cotas extras de apoio</td></tr>
+        <tr><td contenteditable="true" data-ek="bp-r2a">Baixa audiencia nos primeiros meses</td><td contenteditable="true" data-ek="bp-r2b">Media</td><td contenteditable="true" data-ek="bp-r2c">Investimento em marketing digital + campanha de lancamento robusta</td></tr>
+        <tr><td contenteditable="true" data-ek="bp-r3a">Problemas tecnicos na transmissao</td><td contenteditable="true" data-ek="bp-r3b">Baixa</td><td contenteditable="true" data-ek="bp-r3c">4 episodios piloto para testes antes da estreia ao vivo</td></tr>
+        <tr><td contenteditable="true" data-ek="bp-r4a">Saida de apresentador(a)</td><td contenteditable="true" data-ek="bp-r4b">Media</td><td contenteditable="true" data-ek="bp-r4c">Contrato com clausulas de fidelidade e aviso previo longo</td></tr>
+        <tr><td contenteditable="true" data-ek="bp-r5a">Cancelamento por patrocinador</td><td contenteditable="true" data-ek="bp-r5b">Baixa</td><td contenteditable="true" data-ek="bp-r5c">Contratos anuais com multa rescisoria + pipeline ativo de reserva</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════ SECAO 4: FINANCEIRO ═══════ -->
+<section class="section" id="financeiro">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h1>Financeiro</h1>
+      <p class="subtitle">Projecoes, orcamento e cenarios para o Ano 1</p>
+    </div>
+    <button onclick="saveFinanceiro()" class="btn-save" id="btn-save-financeiro" style="display:none">&#128190; Salvar alteracoes</button>
+  </div>
+
+  <div class="cards-grid" id="fin-cards"></div>
+
+  <div class="card" style="margin-bottom:24px;" id="fin-grafico-card"></div>
+
+  <div class="row-2">
+    <div>
+      <div class="section-header-row">
+        <h2 style="margin:0;">Receita por Fonte</h2>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:11px;color:#00A878;background:#f0fff4;border:1px solid #a5d6a7;padding:3px 10px;border-radius:10px;">🔗 Sincronizado com Pipeline</span>
+          <button onclick="addFinRow('receitaFontes')" class="btn-add" style="margin:0;padding:5px 10px;font-size:12px;">+ Outras fontes</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Fonte</th><th>Valor Anual</th><th>%</th><th style="width:32px;"></th></tr></thead>
+          <tbody id="fin-receita-tbody"></tbody>
+          <tfoot><tr>
+            <td><strong>TOTAL</strong></td>
+            <td><span id="fin-receita-total-valor" class="calc-locked" style="font-weight:600;"></span></td>
+            <td><span id="fin-receita-total-pct" class="calc-locked" style="font-weight:600;"></span></td>
+            <td></td>
+          </tr></tfoot>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="section-header-row">
+        <h2 style="margin:0;">Custos por Categoria</h2>
+        <button onclick="addFinRow('custos')" class="btn-add" style="margin:0;padding:5px 10px;font-size:12px;">+ Linha</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Item</th><th>Valor Anual</th><th>%</th><th style="width:32px;"></th></tr></thead>
+          <tbody id="fin-custos-tbody"></tbody>
+          <tfoot><tr>
+            <td><strong>TOTAL</strong></td>
+            <td><span id="fin-custos-total-valor" class="calc-locked" style="font-weight:600;"></span></td>
+            <td><span id="fin-custos-total-pct" class="calc-locked" style="font-weight:600;"></span></td>
+            <td></td>
+          </tr></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <h2>Cenarios de Projecao</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Cenario</th><th>Ocupacao</th><th>Receita</th><th>Custo</th><th>Resultado</th><th>Margem</th><th style="width:32px;"></th></tr></thead>
+      <tbody id="fin-cenarios-tbody"></tbody>
+    </table>
+  </div>
+  <button onclick="addFinRow('cenarios')" class="btn-add">+ Cenario</button>
+
+  <h2>Fluxo de Caixa — Primeiros 12 Meses</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Mes</th><th>Receita</th><th>Custo</th><th>Resultado</th><th>Saldo Acumulado</th><th style="width:32px;"></th></tr></thead>
+      <tbody id="fin-fluxo-tbody"></tbody>
+    </table>
+  </div>
+  <button onclick="addFinRow('fluxo')" class="btn-add">+ Mes</button>
+</section>
+
+<!-- ═══════ SECAO 5: PIPELINE ═══════ -->
+<section class="section" id="pipeline">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h1>Pipeline Comercial</h1>
+      <p class="subtitle">Gestao de prospects e cotas de patrocinio</p>
+    </div>
+    <button class="btn btn-primary" onclick="openModalProspect(null)">+ Adicionar Prospect</button>
+  </div>
+
+  <div class="cards-grid" id="pipeline-resumo-cards"></div>
+
+  <h2>Kanban de Prospects</h2>
+  <div class="filtros">
+    <select class="filtro-select" id="filtro-estagio" onchange="renderPipeline()">
+      <option value="">Todos os estagios</option>
+      <option>Prospeccao</option>
+      <option>Em Negociacao</option>
+      <option>Proposta Enviada</option>
+      <option>Fechado</option>
+      <option>Sem Interesse</option>
+    </select>
+    <select class="filtro-select" id="filtro-cota" onchange="renderPipeline()">
+      <option value="">Todas as cotas</option>
+    </select>
+  </div>
+
+  <div class="kanban-wrap">
+    <div class="kanban" id="kanban-board"></div>
+  </div>
+
+  <h2>Tabela Completa de Prospects</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Empresa</th><th>Segmento</th><th>Contato</th><th>Cota</th><th>Valor/ano</th><th>Estagio</th><th>Follow-up</th><th>Acoes</th></tr></thead>
+      <tbody id="pipeline-tbody"></tbody>
+      <tfoot><tr><td colspan="4"><strong>Total em Pipeline</strong></td><td id="pipeline-total" colspan="4"></td></tr></tfoot>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════ SECAO 6: PRODUCAO ═══════ -->
+<section class="section" id="producao">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h1>Producao</h1>
+      <p class="subtitle">Episodios, calendario operacional e estrutura do programa</p>
+    </div>
+    <button class="btn btn-primary" onclick="openModalEpisodio(null)">+ Adicionar Episodio</button>
+  </div>
+
+  <h2>Grade de Episodios</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Ep.</th><th>Data</th><th>Tipo</th><th>Tema</th><th>Quadro</th><th>Convidado</th><th>Patrocinador</th><th>Status</th><th>Acoes</th></tr></thead>
+      <tbody id="episodios-tbody"></tbody>
+    </table>
+  </div>
+
+  <h2>Calendario Operacional (Semana Tipo)</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Dia</th><th>Atividade Principal</th><th>Responsavel</th><th>Entregavel</th></tr></thead>
+      <tbody>
+        <tr><td contenteditable="true" data-ek="pr-c1a"><strong>Segunda</strong></td><td contenteditable="true" data-ek="pr-c1b">Pauta, tema e confirmacao do convidado</td><td contenteditable="true" data-ek="pr-c1c">Diretor de Conteudo</td><td contenteditable="true" data-ek="pr-c1d">Briefing da semana</td></tr>
+        <tr><td contenteditable="true" data-ek="pr-c2a"><strong>Terca</strong></td><td contenteditable="true" data-ek="pr-c2b">Redacao do roteiro + alinhamento comercial</td><td contenteditable="true" data-ek="pr-c2c">Diretor de Conteudo</td><td contenteditable="true" data-ek="pr-c2d">Roteiro v2 aprovado</td></tr>
+        <tr><td contenteditable="true" data-ek="pr-c3a"><strong>Quarta</strong></td><td contenteditable="true" data-ek="pr-c3b">Preparacao do estudio, graficos e VTs</td><td contenteditable="true" data-ek="pr-c3c">Produtor Executivo</td><td contenteditable="true" data-ek="pr-c3d">Estudio pronto</td></tr>
+        <tr><td contenteditable="true" data-ek="pr-c4a"><strong>Quinta</strong></td><td contenteditable="true" data-ek="pr-c4b">Ensaio do apresentador + aprovacao final</td><td contenteditable="true" data-ek="pr-c4c">Apresentador</td><td contenteditable="true" data-ek="pr-c4d">Roteiro final assinado</td></tr>
+        <tr><td contenteditable="true" data-ek="pr-c5a"><strong>Sexta</strong></td><td contenteditable="true" data-ek="pr-c5b">Gravacao completa do episodio</td><td contenteditable="true" data-ek="pr-c5c">Toda a equipe</td><td contenteditable="true" data-ek="pr-c5d">Material bruto salvo</td></tr>
+        <tr><td contenteditable="true" data-ek="pr-c6a"><strong>Sabado</strong></td><td contenteditable="true" data-ek="pr-c6b">Exibicao ao vivo na Band Minas Gerais</td><td contenteditable="true" data-ek="pr-c6c">Toda a equipe</td><td contenteditable="true" data-ek="pr-c6d">Episodio no ar</td></tr>
+        <tr><td contenteditable="true" data-ek="pr-c7a"><strong>Domingo</strong></td><td contenteditable="true" data-ek="pr-c7b">Edicao, YouTube, posts e relatorio</td><td contenteditable="true" data-ek="pr-c7c">Editor + Social Media</td><td contenteditable="true" data-ek="pr-c7d">Episodio publicado</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Estrutura de Cada Episodio (30 min)</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Bloco</th><th>Duracao</th><th>Conteudo</th></tr></thead>
+      <tbody>
+        <tr><td contenteditable="true" data-ek="pr-e1a">Abertura + Tema + Entrevista</td><td contenteditable="true" data-ek="pr-e1b">10 min</td><td contenteditable="true" data-ek="pr-e1c">Apresentador abre, apresenta o tema e entrevista o especialista convidado</td></tr>
+        <tr><td contenteditable="true" data-ek="pr-e2a">Break 1</td><td contenteditable="true" data-ek="pr-e2b">3 min</td><td contenteditable="true" data-ek="pr-e2c">Publicidade: 2x30s Master + 1x30s Apoio</td></tr>
+        <tr><td contenteditable="true" data-ek="pr-e3a">Mitos e Verdades + Caso Real</td><td contenteditable="true" data-ek="pr-e3b">7 min</td><td contenteditable="true" data-ek="pr-e3c">Quadro interativo com 5 afirmacoes + historia real de paciente</td></tr>
+        <tr><td contenteditable="true" data-ek="pr-e4a">Break 2</td><td contenteditable="true" data-ek="pr-e4b">3 min</td><td contenteditable="true" data-ek="pr-e4c">Publicidade + Merchandising integrado</td></tr>
+        <tr><td contenteditable="true" data-ek="pr-e5a">Tecnologia em Saude + Dica Pratica</td><td contenteditable="true" data-ek="pr-e5b">7 min</td><td contenteditable="true" data-ek="pr-e5c">Inovacoes medicas + dica aplicavel imediata para a audiencia</td></tr>
+      </tbody>
+      <tfoot><tr><td><strong>TOTAL</strong></td><td><strong>30 min</strong></td><td></td></tr></tfoot>
+    </table>
+  </div>
+
+  <h2>Quadros Fixos</h2>
+  <div class="cards-grid">
+    <div class="card"><h3 contenteditable="true" data-ek="pr-q1t">Saude sem Misterio</h3><p style="font-size:13px;color:var(--cinza-texto);" contenteditable="true" data-ek="pr-q1d">4 min — Explica temas complexos em linguagem acessivel para o grande publico</p></div>
+    <div class="card"><h3 contenteditable="true" data-ek="pr-q2t">Alerta Medico</h3><p style="font-size:13px;color:var(--cinza-texto);" contenteditable="true" data-ek="pr-q2d">3-4 min — Informacoes urgentes de saude publica e prevencao</p></div>
+    <div class="card"><h3 contenteditable="true" data-ek="pr-q3t">Tecnologia que Salva</h3><p style="font-size:13px;color:var(--cinza-texto);" contenteditable="true" data-ek="pr-q3d">4 min — Inovacoes medicas, equipamentos e tratamentos de ponta</p></div>
+    <div class="card"><h3 contenteditable="true" data-ek="pr-q4t">Historias que Inspiram</h3><p style="font-size:13px;color:var(--cinza-texto);" contenteditable="true" data-ek="pr-q4d">3 min — Relatos reais de superacao, cura e qualidade de vida</p></div>
+  </div>
+</section>
+
+<!-- ═══════ SECAO 7: EQUIPE ═══════ -->
+<section class="section" id="equipe">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h1>Equipe</h1>
+      <p class="subtitle">Estrutura organizacional e posicoes a contratar</p>
+    </div>
+    <button class="btn btn-primary" onclick="openModalMembro(null)">+ Adicionar Membro</button>
+  </div>
+
+  <h2>Organograma</h2>
+  <div class="org-wrap">
+    <div class="org-row"><div class="org-box centro"><span contenteditable="true" data-ek="eq-org0t">Produtor Executivo</span><span contenteditable="true" data-ek="eq-org0s">Lider operacional</span></div></div>
+    <div class="org-linha"></div>
+    <div class="org-row">
+      <div class="org-box"><span contenteditable="true" data-ek="eq-org1t">Apresentador(a)</span><span contenteditable="true" data-ek="eq-org1s">Face do programa</span></div>
+      <div class="org-box"><span contenteditable="true" data-ek="eq-org2t">Dir. de Conteudo</span><span contenteditable="true" data-ek="eq-org2s">Pauta e roteiros</span></div>
+      <div class="org-box"><span contenteditable="true" data-ek="eq-org3t">Ger. Comercial</span><span contenteditable="true" data-ek="eq-org3s">Patrocinadores</span></div>
+      <div class="org-box"><span contenteditable="true" data-ek="eq-org4t">Editor de Video</span><span contenteditable="true" data-ek="eq-org4s">Pos-producao</span></div>
+      <div class="org-box"><span contenteditable="true" data-ek="eq-org5t">Social Media</span><span contenteditable="true" data-ek="eq-org5s">Digital</span></div>
+      <div class="org-box"><span contenteditable="true" data-ek="eq-org6t">Assistente</span><span contenteditable="true" data-ek="eq-org6s">Apoio geral</span></div>
+    </div>
+  </div>
+
+  <h2>Tabela de Vagas</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Cargo</th><th>Regime</th><th>Remuneracao Estimada</th><th>Status</th><th>Responsabilidades</th><th>Acoes</th></tr></thead>
+      <tbody id="equipe-tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="alerta alerta-amarelo" style="margin-top:16px;">
+    <span class="alerta-icon">&#x26A0;</span>
+    <div contenteditable="true" data-ek="eq-alerta">Contratar em etapas: Produtor Executivo e Gerente Comercial primeiro, depois equipe tecnica conforme a producao avancar. Custo meta: R$ 25.000/mes.</div>
+  </div>
+</section>
+
+<!-- ═══════ SECAO 8: KPIs ═══════ -->
+<section class="section" id="kpis">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h1>KPIs</h1>
+      <p class="subtitle">Metas de audiencia, resultado comercial e crescimento digital</p>
+    </div>
+  </div>
+
+  <h2>Audiencia de TV</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Metrica</th><th>Mes 1</th><th>Mes 6</th><th>Ano 1</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td contenteditable="true" data-ek="kpi-tv1a">Audiencia media por episodio</td><td contenteditable="true" data-ek="kpi-tv1b">150.000</td><td contenteditable="true" data-ek="kpi-tv1c">250.000</td><td contenteditable="true" data-ek="kpi-tv1d">350.000</td><td contenteditable="true" data-ek="kpi-tv1e">Monitorar</td></tr>
+        <tr><td contenteditable="true" data-ek="kpi-tv2a">Share de audiencia</td><td contenteditable="true" data-ek="kpi-tv2b">8%</td><td contenteditable="true" data-ek="kpi-tv2c">12%</td><td contenteditable="true" data-ek="kpi-tv2d">15%</td><td contenteditable="true" data-ek="kpi-tv2e">Monitorar</td></tr>
+        <tr><td contenteditable="true" data-ek="kpi-tv3a">Retencao por episodio</td><td contenteditable="true" data-ek="kpi-tv3b">70%</td><td contenteditable="true" data-ek="kpi-tv3c">75%</td><td contenteditable="true" data-ek="kpi-tv3d">80%</td><td contenteditable="true" data-ek="kpi-tv3e">Monitorar</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Indicadores Comerciais</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Metrica</th><th>Mes 1</th><th>Mes 6</th><th>Ano 1</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td contenteditable="true" data-ek="kpi-com1a">Taxa de ocupacao das cotas</td><td contenteditable="true" data-ek="kpi-com1b">50%</td><td contenteditable="true" data-ek="kpi-com1c">80%</td><td contenteditable="true" data-ek="kpi-com1d">95%</td><td contenteditable="true" data-ek="kpi-com1e">Monitorar</td></tr>
+        <tr><td contenteditable="true" data-ek="kpi-com2a">Retencao de patrocinadores</td><td contenteditable="true" data-ek="kpi-com2b">80%</td><td contenteditable="true" data-ek="kpi-com2c">90%</td><td contenteditable="true" data-ek="kpi-com2d">95%</td><td contenteditable="true" data-ek="kpi-com2e">Monitorar</td></tr>
+        <tr><td contenteditable="true" data-ek="kpi-com3a">Receita mensal</td><td contenteditable="true" data-ek="kpi-com3b">R$ 45.000</td><td contenteditable="true" data-ek="kpi-com3c">R$ 95.000</td><td contenteditable="true" data-ek="kpi-com3d">R$ 110.000</td><td contenteditable="true" data-ek="kpi-com3e">Monitorar</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Crescimento Digital</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Metrica</th><th>Mes 1</th><th>Mes 6</th><th>Ano 1</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td contenteditable="true" data-ek="kpi-dig1a">Views YouTube</td><td contenteditable="true" data-ek="kpi-dig1b">50.000</td><td contenteditable="true" data-ek="kpi-dig1c">500.000</td><td contenteditable="true" data-ek="kpi-dig1d">2.000.000</td><td contenteditable="true" data-ek="kpi-dig1e">Monitorar</td></tr>
+        <tr><td contenteditable="true" data-ek="kpi-dig2a">Seguidores Instagram</td><td contenteditable="true" data-ek="kpi-dig2b">5.000</td><td contenteditable="true" data-ek="kpi-dig2c">50.000</td><td contenteditable="true" data-ek="kpi-dig2d">150.000</td><td contenteditable="true" data-ek="kpi-dig2e">Monitorar</td></tr>
+        <tr><td contenteditable="true" data-ek="kpi-dig3a">Leads capturados</td><td contenteditable="true" data-ek="kpi-dig3b">500</td><td contenteditable="true" data-ek="kpi-dig3c">5.000</td><td contenteditable="true" data-ek="kpi-dig3d">20.000</td><td contenteditable="true" data-ek="kpi-dig3e">Monitorar</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Progresso das Metas Prioritarias</h2>
+  <div class="card">
+    <div class="progress-wrap" style="margin-bottom:18px;">
+      <div class="progress-label"><span contenteditable="true" data-ek="kpi-bar1">Pipeline Comercial Fechado (meta: R$ 1.220.000/ano)</span><span id="kpi-pipeline-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="kpi-pipeline-bar" style="width:0%"></div></div>
+    </div>
+    <div class="progress-wrap" style="margin-bottom:18px;">
+      <div class="progress-label"><span contenteditable="true" data-ek="kpi-bar2">Marcos Concluidos (meta: 100%)</span><span id="kpi-marcos-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="kpi-marcos-bar" style="width:0%"></div></div>
+    </div>
+    <div class="progress-wrap" style="margin-bottom:18px;">
+      <div class="progress-label"><span contenteditable="true" data-ek="kpi-bar3">Equipe Contratada (meta: 7 cargos)</span><span id="kpi-equipe-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="kpi-equipe-bar" style="width:0%"></div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span contenteditable="true" data-ek="kpi-bar4">Episodios Produzidos (meta: 52 no Ano 1)</span><span id="kpi-ep-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="kpi-ep-bar" style="width:0%"></div></div>
+    </div>
+    <p style="font-size:12px;color:var(--cinza-texto);margin-top:16px;">As barras sao calculadas automaticamente com base nos dados das outras secoes.</p>
+  </div>
+</section>
+
+<!-- ═══════ SECAO 9: CONFIGURACOES ═══════ -->
+<section class="section" id="configuracoes">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h1>Configuracoes</h1>
+      <p class="subtitle">Edite os dados gerais do projeto</p>
+    </div>
+  </div>
+
+  <div class="config-card">
+    <h3>Dados Gerais do Programa</h3>
+    <div style="margin-top:16px;">
+      <div class="form-row">
+        <div class="form-group"><label>Nome do Programa</label><input type="text" id="cfg-programa" /></div>
+        <div class="form-group"><label>Canal de TV</label><input type="text" id="cfg-canal" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Fase Atual</label><input type="text" id="cfg-fase" /></div>
+        <div class="form-group"><label>Progresso da Fase (0-100)</label><input type="number" id="cfg-progresso" min="0" max="100" /></div>
+      </div>
+      <button class="btn btn-primary" onclick="salvarConfig()">Salvar Configuracoes</button>
+    </div>
+  </div>
+
+  <div class="config-card">
+    <h3>Metricas Financeiras</h3>
+    <p style="font-size:12px;color:var(--cinza-texto);margin:8px 0 16px;">Receita e Break-even sao calculados automaticamente pelo Financeiro. Edite la para alterar.</p>
+    <div style="margin-top:8px;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Receita Anual Projetada</label>
+          <div id="cfg-receita-display" style="padding:10px 12px;background:var(--cinza-medio);border-radius:6px;font-weight:600;color:var(--azul);font-size:14px;">—</div>
+        </div>
+        <div class="form-group"><label>Investimento Inicial (R$)</label><input type="number" id="cfg-investimento" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Break-even</label>
+          <div id="cfg-breakeven-display" style="padding:10px 12px;background:var(--cinza-medio);border-radius:6px;font-weight:600;color:var(--azul);font-size:14px;">—</div>
+        </div>
+        <div class="form-group"><label>Total de Cotas Disponiveis</label><input type="number" id="cfg-cotas" /></div>
+      </div>
+      <button class="btn btn-primary" onclick="salvarMetricasEditaveis()">Salvar Investimento e Cotas</button>
+    </div>
+  </div>
+
+  <div class="config-card" style="margin-top:0;">
+    <h3>Seguranca — Senha de Acesso</h3>
+    <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+      <p style="font-size:13.5px;color:#374151;">Altere a senha de acesso ao dashboard. A senha padrao e <strong>foco2026</strong>.</p>
+      <button class="btn btn-secondary" onclick="alterarSenha()">Alterar Senha</button>
+    </div>
+  </div>
+
+  <div class="reset-area">
+    <p><strong>Resetar todos os dados:</strong> Apaga todas as alteracoes e volta para os dados originais do projeto.</p>
+    <button class="btn btn-danger" onclick="confirmarReset()">Resetar Dados</button>
+  </div>
+</section>
+
+<!-- ═══════ SECAO 10: AJUDA / MANUAL ═══════ -->
+<section class="section" id="ajuda">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h1>Ajuda / Manual</h1>
+      <p class="subtitle">Como usar o dashboard e entender cada secao</p>
+    </div>
+  </div>
+
+  <div class="config-card">
+    <h3>Visao Geral do Dashboard</h3>
+    <p style="margin-top:12px;font-size:14px;line-height:1.7;color:#374151;">
+      Este dashboard e o sistema central de operacao do programa <strong>FOCO em SAUDE Minas</strong>. Todas as informacoes sao salvas no seu navegador (localStorage) e persistem entre sessoes. Use o menu lateral para navegar entre as secoes.
+    </p>
+  </div>
+
+  <div class="config-card">
+    <h3>📊 Dashboard</h3>
+    <p style="margin-top:10px;font-size:14px;line-height:1.7;color:#374151;">
+      Visao geral dos principais indicadores do projeto: progresso da fase atual, receita captada, pipeline comercial, producao de episodios e status da equipe. Os cards sao atualizados automaticamente conforme voce edita as outras secoes.
+    </p>
+  </div>
+
+  <div class="config-card">
+    <h3>🗺️ Roadmap</h3>
+    <p style="margin-top:10px;font-size:14px;line-height:1.7;color:#374151;">
+      Linha do tempo com os marcos estrategicos do projeto divididos em 3 fases: Estruturacao (meses 1-3), Lancamento (meses 4-6) e Expansao (meses 7-12). Clique em qualquer marco para editar o status (Pendente, Em Andamento ou Concluido). O progresso geral e calculado automaticamente.
+    </p>
+  </div>
+
+  <div class="config-card">
+    <h3>📋 Business Plan</h3>
+    <p style="margin-top:10px;font-size:14px;line-height:1.7;color:#374151;">
+      Resumo executivo completo do projeto: conceito, diferenciais, modelo de monetizacao, cotas de patrocinio, projecao financeira e analise de riscos. Use para apresentar o programa a potenciais patrocinadores e parceiros estrategicos.
+    </p>
+  </div>
+
+  <div class="config-card">
+    <h3>💰 Financeiro</h3>
+    <p style="margin-top:10px;font-size:14px;line-height:1.7;color:#374151;">
+      Tabela de cotas de patrocinio com valores, formatos e beneficios de cada nivel (Master, Apoio, Participacao). Edite diretamente nas celulas e clique em "Salvar" para persistir as alteracoes. Use o botao "Adicionar" para incluir novos itens.
+    </p>
+  </div>
+
+  <div class="config-card">
+    <h3>🤝 Pipeline Comercial</h3>
+    <p style="margin-top:10px;font-size:14px;line-height:1.7;color:#374151;">
+      Gestao completa de prospects e negociacoes. Cada linha representa uma empresa e seu estagio no funil: Prospeccao, Em Negociacao, Proposta Enviada ou Fechado. Clique em "Editar" para atualizar dados, proxima acao e data de follow-up. O valor captado no Dashboard reflete apenas contratos "Fechados".
+    </p>
+  </div>
+
+  <div class="config-card">
+    <h3>🎬 Producao</h3>
+    <p style="margin-top:10px;font-size:14px;line-height:1.7;color:#374151;">
+      Controle de episodios: numero, titulo, tematica, data de gravacao, status (Planejado, Em Gravacao, Editando, Publicado) e notas de producao. Clique em "Editar" para atualizar qualquer informacao. O numero de episodios publicados alimenta o KPI de producao no Dashboard.
+    </p>
+  </div>
+
+  <div class="config-card">
+    <h3>👥 Equipe</h3>
+    <p style="margin-top:10px;font-size:14px;line-height:1.7;color:#374151;">
+      Cargos previstos para o projeto com status de contratacao (A Contratar, Em Processo, Contratado) e nivel de prioridade (Alta, Media, Baixa). Mantenha atualizado para que o KPI de equipe reflita o progresso real da montagem do time.
+    </p>
+  </div>
+
+  <div class="config-card">
+    <h3>📈 KPIs</h3>
+    <p style="margin-top:10px;font-size:14px;line-height:1.7;color:#374151;">
+      Metas de desempenho para audiencia de TV, indicadores comerciais e crescimento digital. As barras de progresso no final da pagina calculam automaticamente: pipeline fechado vs. meta anual, marcos concluidos, equipe contratada e episodios publicados.
+    </p>
+  </div>
+
+  <div class="config-card">
+    <h3>⚙️ Configuracoes</h3>
+    <p style="margin-top:10px;font-size:14px;line-height:1.7;color:#374151;">
+      Edite os dados gerais do programa (nome, canal, fase atual, progresso) e as metricas financeiras principais (receita projetada, investimento, break-even, cotas). Use o botao "Resetar Dados" para voltar a todos os valores originais caso precise reiniciar o dashboard do zero.
+    </p>
+    <div style="margin-top:14px;padding:12px 16px;background:var(--amarelo);border-radius:8px;font-size:13px;color:#7D5A00;">
+      <strong>Atencao:</strong> o reset apaga permanentemente todas as alteracoes feitas no navegador. Faca isso apenas se quiser recomecar com os dados originais do projeto.
+    </div>
+  </div>
+
+  <div class="config-card">
+    <h3>Perguntas Frequentes</h3>
+    <div style="margin-top:14px;display:flex;flex-direction:column;gap:16px;">
+      <div>
+        <p style="font-size:14px;font-weight:600;color:#1F2937;">Os dados ficam salvos?</p>
+        <p style="font-size:13.5px;line-height:1.6;color:#374151;margin-top:4px;">Sim. Tudo e salvo automaticamente no localStorage do navegador. Se voce limpar o cache ou usar outro navegador, os dados serao reiniciados para os valores padrao.</p>
+      </div>
+      <div>
+        <p style="font-size:14px;font-weight:600;color:#1F2937;">Posso usar em celular?</p>
+        <p style="font-size:13.5px;line-height:1.6;color:#374151;margin-top:4px;">O dashboard e responsivo e funciona em telas menores, mas a experiencia e melhor em computador ou tablet pela quantidade de dados exibidos.</p>
+      </div>
+      <div>
+        <p style="font-size:14px;font-weight:600;color:#1F2937;">Como acesso de fora da rede?</p>
+        <p style="font-size:13.5px;line-height:1.6;color:#374151;margin-top:4px;">Acesse pelo IP publico do servidor: <strong>http://187.77.149.236:8092/index.html</strong>. O servidor precisa estar rodando na VPS.</p>
+      </div>
+      <div>
+        <p style="font-size:14px;font-weight:600;color:#1F2937;">Preciso de login para acessar?</p>
+        <p style="font-size:13.5px;line-height:1.6;color:#374151;margin-top:4px;">Nao. O dashboard e publico para quem tiver o link. Evite compartilhar com pessoas externas ao projeto enquanto estiver em fase de desenvolvimento.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="config-card" style="background:linear-gradient(135deg,#1B4F72 0%,#154360 100%);color:#fff;">
+    <h3 style="color:#fff;">Suporte</h3>
+    <p style="margin-top:10px;font-size:14px;line-height:1.7;color:rgba(255,255,255,0.85);">
+      Para solicitar melhorias, reportar bugs ou adicionar novas funcionalidades ao dashboard, entre em contato com a equipe responsavel pelo desenvolvimento do sistema operacional do projeto.
+    </p>
+    <p style="margin-top:12px;font-size:13px;color:rgba(255,255,255,0.6);">FOCO em SAUDE Minas — Dashboard v1.0 — Maio 2026</p>
+  </div>
+</section>
+
+</main>
+
+<!-- LOGIN OVERLAY -->
+<div id="login-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(27,79,114,0.97);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:16px;">
+  <div style="background:#fff;border-radius:14px;padding:40px 36px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.3);text-align:center;">
+    <div style="font-size:40px;margin-bottom:8px;">🔒</div>
+    <h2 style="font-family:'Playfair Display',serif;color:#1B4F72;margin-bottom:6px;font-size:22px;">Foco em Saude Minas</h2>
+    <p style="font-size:13px;color:#6B7280;margin-bottom:24px;">Digite a senha para acessar o dashboard</p>
+    <input type="password" id="login-input" placeholder="Senha" onkeydown="if(event.key==='Enter')tentarLogin()" style="width:100%;padding:12px 16px;border:1px solid #E8ECF0;border-radius:8px;font-size:15px;font-family:'DM Sans',sans-serif;text-align:center;outline:none;margin-bottom:12px;" />
+    <div id="login-erro" style="display:none;color:#C0392B;font-size:13px;margin-bottom:10px;">Senha incorreta. Tente novamente.</div>
+    <button onclick="tentarLogin()" style="width:100%;padding:12px;background:#00A878;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Entrar</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL OVERLAY -->
+<div class="modal-overlay" id="modal-overlay" onclick="fecharModalPeloOverlay(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// DADOS DEFAULT
+// ═══════════════════════════════════════════
+const DEFAULT_DATA = {
+  config: {
+    programa: "FOCO em SAUDE Minas",
+    canal: "Band Minas Gerais",
+    faseAtual: "Fase 1 — Estruturacao",
+    progressoFase: 10
+  },
+  metricas: {
+    receitaAnual: 1220000,
+    investimento: 285000,
+    breakeven: 7,
+    cotasDisponiveis: 8
+  },
+  pipeline: [
+    { id:1, empresa:"Clinica Saude Total BH", segmento:"Clinica Geral", contato:"Dr. Ricardo Mendes", telefone:"(31) 99810-2233", email:"comercial@saudetotalbh.com.br", cota:"Master", valor:480000, estagio:"Em Negociacao", proximaAcao:"Enviar midia kit", followup:"20/05/2026", notas:"Muito interesse, aguarda proposta formal" },
+    { id:2, empresa:"Hospital Sao Lucas MG", segmento:"Hospital", contato:"Dra. Fernanda Castro", telefone:"(31) 3321-4455", email:"mkt@saolucasmg.com.br", cota:"Apoio", valor:96000, estagio:"Proposta Enviada", proximaAcao:"Follow-up por telefone", followup:"15/05/2026", notas:"Proposta enviada 08/05" },
+    { id:3, empresa:"OdontoFlex BH", segmento:"Odontologia", contato:"Paulo Rezende", telefone:"(31) 98765-0001", email:"paulo@odontoflex.com.br", cota:"Apoio", valor:96000, estagio:"Prospeccao", proximaAcao:"Primeiro contato", followup:"22/05/2026", notas:"Indicacao de parceiro" },
+    { id:4, empresa:"Unimed BH", segmento:"Plano de Saude", contato:"Carla Drummond", telefone:"(31) 3333-9900", email:"carla.drummond@unimedbh.com.br", cota:"Master", valor:480000, estagio:"Prospeccao", proximaAcao:"Agendar reuniao", followup:"18/05/2026", notas:"Contato frio, fortissimo potencial" },
+    { id:5, empresa:"Laboratorio Hermes Pardini", segmento:"Laboratorio", contato:"Marcos Leal", telefone:"(31) 3228-6600", email:"mkt@hermespardini.com.br", cota:"Apoio", valor:96000, estagio:"Em Negociacao", proximaAcao:"Apresentacao presencial", followup:"14/05/2026", notas:"Reuniao marcada" },
+    { id:6, empresa:"Farmacias Drogaria Araujo", segmento:"Farmacia", contato:"Renata Fonseca", telefone:"(31) 3248-7700", email:"renata.fonseca@araujo.com.br", cota:"Participacao", valor:60000, estagio:"Prospeccao", proximaAcao:"Enviar midia kit", followup:"25/05/2026", notas:"" },
+    { id:7, empresa:"Centro Ortopedico Minas", segmento:"Ortopedia", contato:"Dr. Andre Vieira", telefone:"(31) 99900-1122", email:"andre@centroortominas.com.br", cota:"Participacao", valor:60000, estagio:"Fechado", proximaAcao:"Assinar contrato", followup:"10/05/2026", notas:"Confirmado! 1a participacao: Ep.06" },
+    { id:8, empresa:"Clinica Mente Sa BH", segmento:"Psiquiatria", contato:"Dra. Livia Borges", telefone:"(31) 98877-3344", email:"livia@mentesabh.com.br", cota:"Participacao", valor:60000, estagio:"Proposta Enviada", proximaAcao:"Aguardar retorno", followup:"16/05/2026", notas:"Enviado 10/05" }
+  ],
+  equipe: [
+    { id:1, cargo:"Apresentador(a)", regime:"PJ", remuneracao:"R$ 12.000 a R$ 18.000/mes", status:"A Contratar", responsabilidades:"Conducao do programa ao vivo, entrevistas, persona publica" },
+    { id:2, cargo:"Diretor de Conteudo", regime:"PJ", remuneracao:"R$ 8.000 a R$ 12.000/mes", status:"A Contratar", responsabilidades:"Pauta semanal, selecao de convidados, roteiro editorial" },
+    { id:3, cargo:"Produtor Executivo", regime:"PJ", remuneracao:"R$ 7.000 a R$ 10.000/mes", status:"A Contratar", responsabilidades:"Operacao geral, agenda de gravacoes, interface com Band Minas" },
+    { id:4, cargo:"Gerente Comercial", regime:"PJ", remuneracao:"R$ 5.000 fixo + 5% comissao", status:"A Contratar", responsabilidades:"Venda de cotas, relacionamento com patrocinadores, renovacoes" },
+    { id:5, cargo:"Editor de Video", regime:"PJ", remuneracao:"R$ 4.000 a R$ 6.000/mes", status:"A Contratar", responsabilidades:"Edicao pos-gravacao, cortes para redes, versao YouTube" },
+    { id:6, cargo:"Social Media / Marketing Digital", regime:"PJ", remuneracao:"R$ 3.500 a R$ 5.000/mes", status:"A Contratar", responsabilidades:"Instagram, YouTube, TikTok, newsletter semanal" },
+    { id:7, cargo:"Assistente de Producao", regime:"PJ", remuneracao:"R$ 2.500 a R$ 3.500/mes", status:"A Contratar", responsabilidades:"Apoio geral, logistica, convidados, materiais" }
+  ],
+  marcos: [
+    { id:1, marco:"Contrato Band Minas Gerais", prazo:"Mes 1", status:"Em Andamento", prioridade:"Alta" },
+    { id:2, marco:"Abertura CNPJ especifico", prazo:"Mes 1", status:"Pendente", prioridade:"Alta" },
+    { id:3, marco:"Contratacao Apresentador(a)", prazo:"Mes 2", status:"Pendente", prioridade:"Alta" },
+    { id:4, marco:"Pre-venda Cota Master", prazo:"Mes 2", status:"Pendente", prioridade:"Alta" },
+    { id:5, marco:"Inicio producao episodios piloto", prazo:"Mes 3", status:"Aguardando", prioridade:"Media" },
+    { id:6, marco:"Identidade visual aprovada", prazo:"Mes 1", status:"Pendente", prioridade:"Media" },
+    { id:7, marco:"Midia kit finalizado", prazo:"Mes 1", status:"Em Andamento", prioridade:"Media" }
+  ],
+  episodios: [
+    { id:1, numero:"01", data:"04/10/2026", tipo:"PILOTO", tema:"Saude Cardiovascular: o que voce precisa saber", quadro:"Tecnologia que Salva", convidado:"Cardiologista", patrocinador:"", status:"Planejado" },
+    { id:2, numero:"02", data:"11/10/2026", tipo:"PILOTO", tema:"Saude Mental pos-pandemia", quadro:"Historias que Inspiram", convidado:"Psiquiatra", patrocinador:"", status:"Planejado" },
+    { id:3, numero:"03", data:"18/10/2026", tipo:"PILOTO", tema:"Diabetes: prevencao e controle", quadro:"Saude sem Misterio", convidado:"Endocrinologista", patrocinador:"", status:"Planejado" },
+    { id:4, numero:"04", data:"25/10/2026", tipo:"PILOTO", tema:"Ortopedia e qualidade de vida", quadro:"Alerta Medico", convidado:"Ortopedista", patrocinador:"Centro Ortopedico Minas", status:"Planejado" },
+    { id:5, numero:"05", data:"01/11/2026", tipo:"ESTREIA", tema:"Oncologia: diagnostico precoce salva vidas", quadro:"Tecnologia que Salva", convidado:"Oncologista", patrocinador:"", status:"Planejado" }
+  ],
+  pricing: [
+    { id:1, servico:"Cota Master", valor:"R$ 40.000/mes", formato:"Anual (12 meses)", descricao:"Exclusividade de segmento, logo no cenario, abertura e encerramento, 2 participacoes/mes" },
+    { id:2, servico:"Cota de Apoio", valor:"R$ 8.000/mes", formato:"Anual (12 meses)", descricao:"Logo em tela, citacao no programa, 1 participacao/mes, conteudo digital" },
+    { id:3, servico:"Cota de Participacao", valor:"R$ 5.000/ep", formato:"Por episodio", descricao:"Especialista convidado no programa, postagens nas redes, release digital" },
+    { id:4, servico:"Merchandising", valor:"R$ 2.500/ep", formato:"Por episodio", descricao:"Produto/servico apresentado durante o programa com chamada especial" },
+    { id:5, servico:"Midia Kit Digital", valor:"Gratis", formato:"Sob consulta", descricao:"Material completo de apresentacao para potenciais patrocinadores" }
+  ],
+  financeiro: {
+    cards: [
+      { id:1, label:"Receita Total Ano 1", value:"R$ 1.220.000", sub:"Cenario realista (80% ocupacao)", color:"" },
+      { id:2, label:"Custo Total Ano 1", value:"R$ 780.000", sub:"Estrutura + Producao + Marketing", color:"#C0392B" },
+      { id:3, label:"Resultado Operacional", value:"R$ 440.000", sub:"Margem de 36%", color:"var(--verde)" },
+      { id:4, label:"Break-even", value:"Mes 7", sub:"60% de ocupacao minima", color:"" }
+    ],
+    grafico: "Investimento inicial: R$ 285.000 | Break-even: Mes 7",
+    receitaFontes: [
+      { id:1, fonte:"Cota Master", valor:"R$ 480.000", pct:"39%" },
+      { id:2, fonte:"Cotas de Apoio (3)", valor:"R$ 288.000", pct:"24%" },
+      { id:3, fonte:"Participacoes", valor:"R$ 300.000", pct:"25%" },
+      { id:4, fonte:"Merchandising", valor:"R$ 96.000", pct:"8%" },
+      { id:5, fonte:"Digital", valor:"R$ 56.000", pct:"4%" }
+    ],
+    receitaTotal: { valor:"R$ 1.220.000", pct:"100%" },
+    custos: [
+      { id:1, item:"Canal / Espaco TV", valor:"R$ 240.000", pct:"31%" },
+      { id:2, item:"Equipe Fixa", valor:"R$ 300.000", pct:"38%" },
+      { id:3, item:"Producao Semanal", valor:"R$ 156.000", pct:"20%" },
+      { id:4, item:"Marketing Digital", valor:"R$ 48.000", pct:"6%" },
+      { id:5, item:"Operacional + Adm.", valor:"R$ 36.000", pct:"5%" }
+    ],
+    custosTotal: { valor:"R$ 780.000", pct:"100%" },
+    cenarios: [
+      { id:1, cenario:"Pessimista", ocupacao:"60%", receita:"R$ 732.000", custo:"R$ 780.000", resultado:"-R$ 48.000", margem:"-6,6%" },
+      { id:2, cenario:"Realista", ocupacao:"80%", receita:"R$ 1.220.000", custo:"R$ 780.000", resultado:"R$ 440.000", margem:"36%" },
+      { id:3, cenario:"Otimista", ocupacao:"95%", receita:"R$ 1.450.000", custo:"R$ 780.000", resultado:"R$ 670.000", margem:"46%" }
+    ],
+    fluxo: [
+      { id:1, mes:"Mes 1", receita:"R$ 0", custo:"R$ 85.000", resultado:"-R$ 85.000", saldo:"-R$ 85.000" },
+      { id:2, mes:"Mes 2", receita:"R$ 0", custo:"R$ 75.000", resultado:"-R$ 75.000", saldo:"-R$ 160.000" },
+      { id:3, mes:"Mes 3", receita:"R$ 25.000", custo:"R$ 65.000", resultado:"-R$ 40.000", saldo:"-R$ 200.000" },
+      { id:4, mes:"Mes 4", receita:"R$ 45.000", custo:"R$ 65.000", resultado:"-R$ 20.000", saldo:"-R$ 220.000" },
+      { id:5, mes:"Mes 5 (Estreia)", receita:"R$ 75.000", custo:"R$ 65.000", resultado:"+R$ 10.000", saldo:"-R$ 210.000" },
+      { id:6, mes:"Mes 6", receita:"R$ 85.000", custo:"R$ 65.000", resultado:"+R$ 20.000", saldo:"-R$ 190.000" },
+      { id:7, mes:"Mes 7 (Break-even)", receita:"R$ 95.000", custo:"R$ 65.000", resultado:"+R$ 30.000", saldo:"-R$ 160.000" },
+      { id:8, mes:"Mes 8", receita:"R$ 100.000", custo:"R$ 65.000", resultado:"+R$ 35.000", saldo:"-R$ 125.000" },
+      { id:9, mes:"Mes 9", receita:"R$ 105.000", custo:"R$ 65.000", resultado:"+R$ 40.000", saldo:"-R$ 85.000" },
+      { id:10, mes:"Mes 10", receita:"R$ 110.000", custo:"R$ 65.000", resultado:"+R$ 45.000", saldo:"-R$ 40.000" },
+      { id:11, mes:"Mes 11", receita:"R$ 110.000", custo:"R$ 65.000", resultado:"+R$ 45.000", saldo:"+R$ 5.000" },
+      { id:12, mes:"Mes 12", receita:"R$ 110.000", custo:"R$ 65.000", resultado:"+R$ 45.000", saldo:"+R$ 50.000" }
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════
+// PERSISTENCIA
+// ═══════════════════════════════════════════
+function saveData(key, data) {
+  localStorage.setItem('foco_saude_' + key, JSON.stringify(data));
+}
+function loadData(key) {
+  try {
+    const saved = localStorage.getItem('foco_saude_' + key);
+    if (!saved) return JSON.parse(JSON.stringify(DEFAULT_DATA[key]));
+    const parsed = JSON.parse(saved);
+    if (key === 'financeiro' && (typeof parsed !== 'object' || !parsed.cards)) {
+      return JSON.parse(JSON.stringify(DEFAULT_DATA[key]));
+    }
+    return parsed;
+  } catch(e) {
+    console.warn('loadData error for key', key, e);
+    return JSON.parse(JSON.stringify(DEFAULT_DATA[key]));
+  }
+}
+
+// Estado em memoria
+let state = {
+  config:    loadData('config'),
+  metricas:  loadData('metricas'),
+  pipeline:  loadData('pipeline'),
+  equipe:    loadData('equipe'),
+  marcos:    loadData('marcos'),
+  episodios: loadData('episodios'),
+  pricing:   loadData('pricing'),
+  financeiro: loadData('financeiro')
+};
+
+function saveState(key) {
+  saveData(key, state[key]);
+}
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+function showToast(msg, tipo='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + tipo + ' show';
+  setTimeout(() => { t.className = 'toast'; }, 3000);
+}
+
+// ═══════════════════════════════════════════
+// NAVEGACAO
+// ═══════════════════════════════════════════
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const sec = document.getElementById(id);
+  if (sec) sec.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + id + "'")) {
+      n.classList.add('active');
+    }
+  });
+  history.pushState(null, '', '#' + id);
+  renderSection(id);
+}
+
+function renderSection(id) {
+  if (id === 'dashboard') renderDashboard();
+  if (id === 'pipeline') renderPipeline();
+  if (id === 'equipe') renderEquipe();
+  if (id === 'roadmap') renderMarcos();
+  if (id === 'producao') renderEpisodios();
+  if (id === 'kpis') renderKPIs();
+  if (id === 'configuracoes') renderConfig();
+  if (id === 'business-plan') renderPricing();
+  if (id === 'financeiro') renderFinanceiro();
+  setTimeout(() => { initEditavel(id); applyEkValues(id); }, 60);
+}
+
+// ═══════════════════════════════════════════
+// CAMPOS EDITAVEIS (contenteditable + data-ek)
+// ═══════════════════════════════════════════
+function initEditavel(secaoId) {
+  const secao = secaoId ? document.getElementById(secaoId) : document;
+  if (!secao) return;
+  secao.querySelectorAll('[data-ek]').forEach(el => {
+    if (el.dataset.ekInit) return;
+    el.dataset.ekInit = '1';
+    el.addEventListener('blur', () => {
+      const ek = el.dataset.ek;
+      saveEk(ek, el.textContent.trim());
+    });
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        el.blur();
+      }
+    });
+  });
+}
+
+function saveEk(ek, valor) {
+  const todos = JSON.parse(localStorage.getItem('foco_saude_ek') || '{}');
+  todos[ek] = valor;
+  localStorage.setItem('foco_saude_ek', JSON.stringify(todos));
+  showToast('Salvo!', 'success');
+}
+
+function loadEk(ek, fallback) {
+  try {
+    const todos = JSON.parse(localStorage.getItem('foco_saude_ek') || '{}');
+    return todos[ek] !== undefined ? todos[ek] : fallback;
+  } catch(e) { return fallback; }
+}
+
+function applyEkValues(secaoId) {
+  const secao = secaoId ? document.getElementById(secaoId) : document;
+  if (!secao) return;
+  secao.querySelectorAll('[data-ek]').forEach(el => {
+    const val = loadEk(el.dataset.ek, null);
+    if (val !== null) el.textContent = val;
+  });
+}
+
+// ═══════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════
+function badgeEstagio(e) {
+  const m = {
+    'Prospeccao': 'badge-cinza',
+    'Em Negociacao': 'badge-azul',
+    'Proposta Enviada': 'badge-laranja',
+    'Fechado': 'badge-verde',
+    'Sem Interesse': 'badge-vermelho'
+  };
+  return `<span class="badge ${m[e]||'badge-cinza'}">${e}</span>`;
+}
+function badgeStatus(s) {
+  const m = {
+    'Pendente': 'badge-vermelho',
+    'Em Andamento': 'badge-amarelo',
+    'Concluido': 'badge-verde',
+    'Bloqueado': 'badge-vermelho',
+    'Aguardando': 'badge-cinza',
+    'A Contratar': 'badge-vermelho',
+    'Em Processo': 'badge-amarelo',
+    'Contratado': 'badge-verde',
+    'Planejado': 'badge-cinza',
+    'Em Producao': 'badge-azul',
+    'Gravado': 'badge-amarelo',
+    'Editado': 'badge-laranja',
+    'Publicado': 'badge-verde'
+  };
+  return `<span class="badge ${m[s]||'badge-cinza'}">${s}</span>`;
+}
+function fmtMoeda(v) {
+  return 'R$ ' + Number(v).toLocaleString('pt-BR');
+}
+function nextId(arr) {
+  return arr.length > 0 ? Math.max(...arr.map(x => x.id)) + 1 : 1;
+}
+
+// ═══════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════
+function renderDashboard() {
+  const m = state.metricas;
+  const cfg = state.config;
+
+  document.getElementById('dash-metricas').innerHTML = `
+    <div class="card card-metric"><div class="label">Receita Projetada Ano 1</div><div class="value">${formatReais(m.receitaAnual)}</div><div class="sub">Calculado pelo Financeiro</div></div>
+    <div class="card card-metric"><div class="label">Investimento Fases 1+2</div><div class="value">${formatReais(m.investimento)}</div><div class="sub">Estruturacao + Pre-producao</div></div>
+    <div class="card card-metric"><div class="label">Break-even</div><div class="value">Mes ${m.breakeven||'—'}</div><div class="sub">Calculado pelo Financeiro</div></div>
+    <div class="card card-metric"><div class="label">Cotas Disponiveis</div><div class="value">${m.cotasDisponiveis} cotas</div><div class="sub">Master + Apoio + Participacao</div></div>
+  `;
+
+  const prog = cfg.progressoFase;
+  document.getElementById('dash-fase-card').innerHTML = `
+    <h3>Fase Atual do Projeto</h3>
+    <div class="fase-pill">&#x25B6; ${cfg.faseAtual}</div>
+    <p style="font-size:13px;color:var(--cinza-texto);margin-bottom:12px;">Canal: ${cfg.canal} | Programa: ${cfg.programa}</p>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Progresso da Fase</span><span>${prog}%</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div>
+    </div>
+  `;
+
+  // Marcos
+  const tbody = document.getElementById('dash-marcos-tbody');
+  const prioritarios = state.marcos.filter(x => x.prioridade === 'Alta' || x.status !== 'Concluido').slice(0, 5);
+  tbody.innerHTML = prioritarios.map((m, i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td>${m.marco}</td>
+      <td>${m.prazo}</td>
+      <td>${badgeStatus(m.prioridade === 'Alta' ? 'Em Andamento' : 'Aguardando').replace('Em Andamento', m.prioridade === 'Alta' ? '🔴 Alta' : '🟡 Media')}</td>
+      <td>${badgeStatus(m.status)}</td>
+    </tr>
+  `).join('');
+
+  // Alertas
+  const urgentes = state.marcos.filter(x => x.prioridade === 'Alta' && x.status !== 'Concluido');
+  let alertasHTML = '';
+  urgentes.slice(0, 3).forEach(m => {
+    alertasHTML += `<div class="alerta alerta-vermelho"><span class="alerta-icon">🚨</span><div><strong>${m.marco}</strong> — ${m.prazo} | ${m.status}</div></div>`;
+  });
+  const hoje = state.pipeline.filter(p => p.estagio === 'Em Negociacao');
+  if (hoje.length > 0) {
+    alertasHTML += `<div class="alerta alerta-amarelo"><span class="alerta-icon">⚠️</span><div><strong>${hoje.length} prospect(s) em negociacao.</strong> Verifique os follow-ups em andamento no Pipeline.</div></div>`;
+  }
+  const fechados = state.pipeline.filter(p => p.estagio === 'Fechado');
+  if (fechados.length > 0) {
+    alertasHTML += `<div class="alerta alerta-verde"><span class="alerta-icon">✅</span><div><strong>${fechados.length} contrato(s) fechado(s).</strong> ${fechados.map(x => x.empresa).join(', ')}</div></div>`;
+  }
+  document.getElementById('dash-alertas').innerHTML = alertasHTML || '<p style="color:var(--cinza-texto);font-size:14px;">Nenhum alerta no momento.</p>';
+
+  // Pipeline resumo
+  const estagios = ['Prospeccao','Em Negociacao','Proposta Enviada','Fechado'];
+  const cores = ['#95A5A6','#1B4F72','#E67E22','#00A878'];
+  document.getElementById('dash-pipeline-resumo').innerHTML = estagios.map((e, i) => {
+    const items = state.pipeline.filter(p => p.estagio === e);
+    const total = items.reduce((s, x) => s + Number(x.valor), 0);
+    return `<div class="card" style="border-top:3px solid ${cores[i]};">
+      <div class="label">${e}</div>
+      <div class="value" style="font-size:20px;color:var(--azul);">${items.length} prospects</div>
+      <div class="sub">${fmtMoeda(total)}/ano</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════
+// PIPELINE
+// ═══════════════════════════════════════════
+function parsePricingValor(valorStr) {
+  if (!valorStr) return 0;
+  const nums = valorStr.replace(/\./g, '').match(/\d+/);
+  return nums ? Number(nums[0]) : 0;
+}
+
+function syncReceitaFromPipeline() {
+  const fechados = state.pipeline.filter(p => p.estagio === 'Fechado');
+
+  // Mantem linhas manuais (sem fromPipeline)
+  const manuais = (state.financeiro.receitaFontes || []).filter(r => !r.fromPipeline);
+
+  // Gera uma linha por prospect fechado
+  const linhasPipeline = fechados.map(p => ({
+    id: p.id,
+    fonte: p.empresa + ' (' + p.cota + ')',
+    valor: formatReais(p.valor),
+    pct: '0%',
+    fromPipeline: true
+  }));
+
+  const todas = [...linhasPipeline, ...manuais];
+  const total = todas.reduce((s, r) => s + parseReais(r.valor), 0);
+  todas.forEach(r => {
+    r.pct = total > 0 ? (parseReais(r.valor) / total * 100).toFixed(1) + '%' : '0%';
+  });
+
+  state.financeiro.receitaFontes = todas;
+  saveState('financeiro');
+
+  if (document.getElementById('financeiro')?.style.display !== 'none') {
+    renderFinanceiro();
+  }
+}
+
+function autoFillValorPorCota(sel) {
+  const servico = sel.value;
+  const prItem = state.pricing.find(p => p.servico === servico);
+  const baseVal = prItem ? parsePricingValor(prItem.valor) : 0;
+  const baseEl = document.getElementById('f-valor-base');
+  const descEl = document.getElementById('f-desconto');
+  if (baseEl) {
+    baseEl.value = baseVal;
+    baseEl.dataset.base = baseVal;
+  }
+  if (descEl) descEl.value = 0;
+  calcValorFinal();
+}
+
+function calcValorFinal() {
+  const base    = Number(document.getElementById('f-valor-base')?.value || 0);
+  const descPct = Number(document.getElementById('f-desconto')?.value || 0);
+  const final   = Math.round(base * (1 - descPct / 100));
+  const finalEl = document.getElementById('f-valor-final');
+  if (finalEl) finalEl.textContent = 'R$ ' + final.toLocaleString('pt-BR');
+  const hiddenEl = document.getElementById('f-valor-hidden');
+  if (hiddenEl) hiddenEl.value = final;
+}
+
+function renderPipeline() {
+  // Atualiza opcoes do filtro de cota com base em state.pricing
+  const cotaSel = document.getElementById('filtro-cota');
+  if (cotaSel) {
+    const current = cotaSel.value;
+    cotaSel.innerHTML = '<option value="">Todas as cotas</option>' +
+      state.pricing.map(p => `<option value="${p.servico}" ${current === p.servico ? 'selected' : ''}>${p.servico}</option>`).join('');
+  }
+
+  const filtroEstagio = document.getElementById('filtro-estagio')?.value || '';
+  const filtroCota    = document.getElementById('filtro-cota')?.value || '';
+
+  let dados = state.pipeline;
+  if (filtroEstagio) dados = dados.filter(p => p.estagio === filtroEstagio);
+  if (filtroCota)    dados = dados.filter(p => p.cota === filtroCota);
+
+  // Cards resumo
+  const estagios = ['Prospeccao','Em Negociacao','Proposta Enviada','Fechado'];
+  const cores = ['#95A5A6','#1B4F72','#E67E22','#00A878'];
+  document.getElementById('pipeline-resumo-cards').innerHTML = estagios.map((e, i) => {
+    const items = state.pipeline.filter(p => p.estagio === e);
+    const total = items.reduce((s, x) => s + Number(x.valor), 0);
+    return `<div class="card" style="border-top:3px solid ${cores[i]};">
+      <div class="label">${e}</div>
+      <div class="value" style="font-size:20px;">${items.length}</div>
+      <div class="sub">${fmtMoeda(total)}/ano</div>
+    </div>`;
+  }).join('');
+
+  // Kanban
+  const board = document.getElementById('kanban-board');
+  board.innerHTML = estagios.concat(['Sem Interesse']).map(e => {
+    const cards = dados.filter(p => p.estagio === e);
+    return `<div class="kanban-col" id="kc-${e.replace(/ /g,'_')}" ondragover="dragOver(event,this)" ondrop="drop(event,'${e}')">
+      <div class="kanban-col-header">${e} <span class="kanban-count">${cards.length}</span></div>
+      ${cards.map(p => `
+        <div class="kanban-card" draggable="true" ondragstart="dragStart(event,${p.id})">
+          <strong>${p.empresa}</strong>
+          <span>${p.contato}</span>
+          <span class="k-valor">${p.cota} — ${fmtMoeda(p.valor)}/ano${p.desconto > 0 ? ` <span style="font-size:10px;background:#fff3e0;color:#e65100;padding:1px 5px;border-radius:8px;">${p.desconto}% desc</span>` : ''}</span>
+          ${p.followup ? `<span class="k-followup">Follow-up: ${p.followup}</span>` : ''}
+          <div style="margin-top:6px;display:flex;gap:4px;">
+            <button class="btn-icon btn-edit" onclick="openModalProspect(${p.id})">✏️</button>
+            <button class="btn-icon btn-delete" onclick="deleteProspect(${p.id})">🗑️</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+  }).join('');
+
+  // Tabela
+  const tbody = document.getElementById('pipeline-tbody');
+  tbody.innerHTML = dados.map(p => `
+    <tr>
+      <td><strong>${p.empresa}</strong></td>
+      <td>${p.segmento}</td>
+      <td>${p.contato}<br><small style="color:var(--cinza-texto);">${p.telefone}</small></td>
+      <td><span class="badge badge-azul">${p.cota}</span></td>
+      <td>${fmtMoeda(p.valor)}</td>
+      <td>${badgeEstagio(p.estagio)}</td>
+      <td style="font-size:12px;">${p.followup}</td>
+      <td><div class="action-btns">
+        <button class="btn-icon btn-edit" onclick="openModalProspect(${p.id})">✏️</button>
+        <button class="btn-icon btn-delete" onclick="deleteProspect(${p.id})">🗑️</button>
+      </div></td>
+    </tr>
+  `).join('');
+
+  const total = dados.reduce((s, x) => s + Number(x.valor), 0);
+  document.getElementById('pipeline-total').innerHTML = `<strong>${fmtMoeda(total)}/ano (${dados.length} prospects)</strong>`;
+}
+
+// DRAG & DROP
+let dragId = null;
+function dragStart(e, id) { dragId = id; e.dataTransfer.effectAllowed = 'move'; }
+function dragOver(e, col) { e.preventDefault(); col.classList.add('drag-over'); }
+function drop(e, novoEstagio) {
+  e.preventDefault();
+  document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+  if (dragId === null) return;
+  const idx = state.pipeline.findIndex(p => p.id === dragId);
+  if (idx >= 0) {
+    state.pipeline[idx].estagio = novoEstagio;
+    saveState('pipeline');
+    renderPipeline();
+    syncReceitaFromPipeline();
+    showToast(state.pipeline[idx].empresa + ' movido para ' + novoEstagio + (novoEstagio === 'Fechado' ? ' — Financeiro atualizado!' : ''));
+  }
+  dragId = null;
+}
+
+// ═══════════════════════════════════════════
+// MODAL PROSPECT
+// ═══════════════════════════════════════════
+function openModalProspect(id) {
+  const p = id ? state.pipeline.find(x => x.id === id) : null;
+  const titulo = p ? 'Editar Prospect' : 'Adicionar Prospect';
+  const html = `
+    <button class="modal-close" onclick="fecharModal()">✕</button>
+    <h3>${titulo}</h3>
+    <div class="form-row">
+      <div class="form-group required"><label>Empresa</label><input type="text" id="f-empresa" value="${p ? p.empresa : ''}" /><div class="error-msg" id="err-empresa">Campo obrigatorio</div></div>
+      <div class="form-group"><label>Segmento</label><input type="text" id="f-segmento" value="${p ? p.segmento : ''}" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group required"><label>Contato</label><input type="text" id="f-contato" value="${p ? p.contato : ''}" /><div class="error-msg" id="err-contato">Campo obrigatorio</div></div>
+      <div class="form-group"><label>Telefone</label><input type="text" id="f-telefone" value="${p ? p.telefone : ''}" /></div>
+    </div>
+    <div class="form-group"><label>Email</label><input type="email" id="f-email" value="${p ? p.email : ''}" /></div>
+    <div class="form-row">
+      <div class="form-group required"><label>Cota</label>
+        <select id="f-cota" onchange="autoFillValorPorCota(this)">
+          ${state.pricing.map(pr => `<option value="${pr.servico}" ${p && p.cota===pr.servico ? 'selected' : ''}>${pr.servico}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Valor Tabela (R$)</label>
+        <input type="number" id="f-valor-base" readonly style="background:var(--cinza-claro);color:var(--azul);font-weight:600;cursor:not-allowed;" value="${p ? (p.valorBase || p.valor || 0) : 0}" data-base="${p ? (p.valorBase || p.valor || 0) : 0}" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Desconto (%)</label>
+        <input type="number" id="f-desconto" min="0" max="100" value="${p ? (p.desconto || 0) : 0}" oninput="calcValorFinal()" placeholder="0" />
+      </div>
+      <div class="form-group">
+        <label>Valor Final / Ano</label>
+        <div id="f-valor-final" style="padding:8px 12px;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:6px;font-weight:700;color:#00695c;font-size:15px;">R$ 0</div>
+        <input type="hidden" id="f-valor-hidden" value="${p ? p.valor : 0}" />
+        <div class="error-msg" id="err-valor" style="display:none;">Selecione uma cota</div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group required"><label>Estagio</label>
+        <select id="f-estagio">
+          ${['Prospeccao','Em Negociacao','Proposta Enviada','Fechado','Sem Interesse'].map(o => `<option ${p && p.estagio===o ? 'selected' : ''}>${o}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>Data Follow-up</label><input type="text" id="f-followup" placeholder="DD/MM/AAAA" value="${p ? p.followup : ''}" /></div>
+    </div>
+    <div class="form-group"><label>Proxima Acao</label><input type="text" id="f-acao" value="${p ? p.proximaAcao : ''}" /></div>
+    <div class="form-group"><label>Notas</label><textarea id="f-notas">${p ? p.notas : ''}</textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarProspect(${id || 'null'})">Salvar</button>
+    </div>
+  `;
+  abrirModal(html);
+  setTimeout(() => {
+    if (p) {
+      const base = p.valorBase || p.valor || 0;
+      const baseEl = document.getElementById('f-valor-base');
+      if (baseEl) { baseEl.value = base; baseEl.dataset.base = base; }
+      calcValorFinal();
+    } else {
+      const cotaSel = document.getElementById('f-cota');
+      if (cotaSel) autoFillValorPorCota(cotaSel);
+    }
+  }, 30);
+}
+
+function salvarProspect(id) {
+  const empresa = document.getElementById('f-empresa').value.trim();
+  const contato = document.getElementById('f-contato').value.trim();
+  let ok = true;
+  ['empresa','contato'].forEach(f => {
+    const v = document.getElementById('f-' + f).value.trim();
+    if (!v) {
+      document.getElementById('f-' + f).classList.add('field-error');
+      document.getElementById('err-' + f).classList.add('show');
+      ok = false;
+    } else {
+      document.getElementById('f-' + f).classList.remove('field-error');
+      document.getElementById('err-' + f).classList.remove('show');
+    }
+  });
+  if (!ok) return;
+
+  const valorFinal   = Number(document.getElementById('f-valor-hidden').value) || 0;
+  const valorBase    = Number(document.getElementById('f-valor-base').value) || 0;
+  const desconto     = Number(document.getElementById('f-desconto').value) || 0;
+
+  const obj = {
+    id: id || nextId(state.pipeline),
+    empresa, contato,
+    valor: valorFinal,
+    valorBase,
+    desconto,
+    segmento: document.getElementById('f-segmento').value.trim(),
+    telefone: document.getElementById('f-telefone').value.trim(),
+    email: document.getElementById('f-email').value.trim(),
+    cota: document.getElementById('f-cota').value,
+    estagio: document.getElementById('f-estagio').value,
+    followup: document.getElementById('f-followup').value.trim(),
+    proximaAcao: document.getElementById('f-acao').value.trim(),
+    notas: document.getElementById('f-notas').value.trim()
+  };
+
+  if (id) {
+    const idx = state.pipeline.findIndex(x => x.id === id);
+    state.pipeline[idx] = obj;
+    showToast('Prospect atualizado!');
+  } else {
+    state.pipeline.push(obj);
+    showToast('Prospect adicionado!');
+  }
+  saveState('pipeline');
+  fecharModal();
+  renderPipeline();
+  syncReceitaFromPipeline();
+}
+
+function deleteProspect(id) {
+  if (!confirm('Excluir este prospect?')) return;
+  state.pipeline = state.pipeline.filter(x => x.id !== id);
+  saveState('pipeline');
+  renderPipeline();
+  syncReceitaFromPipeline();
+  showToast('Prospect excluido.');
+}
+
+// ═══════════════════════════════════════════
+// EQUIPE
+// ═══════════════════════════════════════════
+function renderEquipe() {
+  const tbody = document.getElementById('equipe-tbody');
+  tbody.innerHTML = state.equipe.map(m => `
+    <tr>
+      <td><strong>${m.cargo}</strong></td>
+      <td>${m.regime}</td>
+      <td>${m.remuneracao}</td>
+      <td>
+        <select class="inline-select" onchange="updateStatusEquipe(${m.id}, this.value)">
+          ${['A Contratar','Em Processo','Contratado'].map(o => `<option ${m.status===o?'selected':''}>${o}</option>`).join('')}
+        </select>
+      </td>
+      <td style="font-size:12px;max-width:220px;">${m.responsabilidades}</td>
+      <td><div class="action-btns">
+        <button class="btn-icon btn-edit" onclick="openModalMembro(${m.id})">✏️</button>
+        <button class="btn-icon btn-delete" onclick="deleteMembro(${m.id})">🗑️</button>
+      </div></td>
+    </tr>
+  `).join('');
+}
+
+function updateStatusEquipe(id, status) {
+  const idx = state.equipe.findIndex(x => x.id === id);
+  if (idx >= 0) { state.equipe[idx].status = status; saveState('equipe'); showToast('Status atualizado!'); }
+}
+
+function openModalMembro(id) {
+  const m = id ? state.equipe.find(x => x.id === id) : null;
+  const html = `
+    <button class="modal-close" onclick="fecharModal()">✕</button>
+    <h3>${m ? 'Editar Membro' : 'Adicionar Membro'}</h3>
+    <div class="form-row">
+      <div class="form-group required"><label>Cargo</label><input type="text" id="f-cargo" value="${m ? m.cargo : ''}" /><div class="error-msg" id="err-cargo">Campo obrigatorio</div></div>
+      <div class="form-group"><label>Regime</label><select id="f-regime"><option ${m&&m.regime==='CLT'?'selected':''}>CLT</option><option ${!m||m.regime==='PJ'?'selected':''}>PJ</option><option ${m&&m.regime==='Freelancer'?'selected':''}>Freelancer</option></select></div>
+    </div>
+    <div class="form-group required"><label>Remuneracao Estimada</label><input type="text" id="f-remun" value="${m ? m.remuneracao : ''}" /><div class="error-msg" id="err-remun">Campo obrigatorio</div></div>
+    <div class="form-group"><label>Status</label>
+      <select id="f-status-membro">
+        ${['A Contratar','Em Processo','Contratado'].map(o => `<option ${m&&m.status===o?'selected':''}>${o}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group"><label>Responsabilidades</label><textarea id="f-resp">${m ? m.responsabilidades : ''}</textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarMembro(${id||'null'})">Salvar</button>
+    </div>
+  `;
+  abrirModal(html);
+}
+
+function salvarMembro(id) {
+  let ok = true;
+  ['cargo','remun'].forEach(f => {
+    const v = document.getElementById('f-' + f).value.trim();
+    if (!v) { document.getElementById('f-'+f).classList.add('field-error'); document.getElementById('err-'+f).classList.add('show'); ok = false; }
+    else { document.getElementById('f-'+f).classList.remove('field-error'); document.getElementById('err-'+f).classList.remove('show'); }
+  });
+  if (!ok) return;
+
+  const obj = {
+    id: id || nextId(state.equipe),
+    cargo: document.getElementById('f-cargo').value.trim(),
+    regime: document.getElementById('f-regime').value,
+    remuneracao: document.getElementById('f-remun').value.trim(),
+    status: document.getElementById('f-status-membro').value,
+    responsabilidades: document.getElementById('f-resp').value.trim()
+  };
+
+  if (id) { const idx = state.equipe.findIndex(x => x.id === id); state.equipe[idx] = obj; showToast('Membro atualizado!'); }
+  else { state.equipe.push(obj); showToast('Membro adicionado!'); }
+  saveState('equipe');
+  fecharModal();
+  renderEquipe();
+}
+
+function deleteMembro(id) {
+  if (!confirm('Excluir este membro?')) return;
+  state.equipe = state.equipe.filter(x => x.id !== id);
+  saveState('equipe');
+  renderEquipe();
+  showToast('Membro excluido.');
+}
+
+// ═══════════════════════════════════════════
+// MARCOS
+// ═══════════════════════════════════════════
+function renderMarcos() {
+  const tbody = document.getElementById('marcos-tbody');
+  tbody.innerHTML = state.marcos.map((m, i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td>${m.marco}</td>
+      <td>${m.prazo}</td>
+      <td>${badgeStatus(m.prioridade === 'Alta' ? 'Em Andamento' : 'Aguardando').replace(/<span[^>]*>.*<\/span>/, '<span class="badge ' + (m.prioridade==='Alta'?'badge-vermelho':'badge-amarelo') + '">' + m.prioridade + '</span>')}</td>
+      <td>
+        <select class="inline-select" onchange="updateStatusMarco(${m.id}, this.value)">
+          ${['Pendente','Em Andamento','Concluido','Bloqueado','Aguardando'].map(o => `<option ${m.status===o?'selected':''}>${o}</option>`).join('')}
+        </select>
+      </td>
+      <td><div class="action-btns">
+        <button class="btn-icon btn-edit" onclick="openModalMarco(${m.id})">✏️</button>
+        <button class="btn-icon btn-delete" onclick="deleteMarco(${m.id})">🗑️</button>
+      </div></td>
+    </tr>
+  `).join('');
+}
+
+function updateStatusMarco(id, status) {
+  const idx = state.marcos.findIndex(x => x.id === id);
+  if (idx >= 0) { state.marcos[idx].status = status; saveState('marcos'); showToast('Marco atualizado!'); }
+}
+
+function openModalMarco(id) {
+  const m = id ? state.marcos.find(x => x.id === id) : null;
+  const html = `
+    <button class="modal-close" onclick="fecharModal()">✕</button>
+    <h3>${m ? 'Editar Marco' : 'Novo Marco'}</h3>
+    <div class="form-group required"><label>Nome do Marco</label><input type="text" id="f-marco" value="${m ? m.marco : ''}" /><div class="error-msg" id="err-marco">Campo obrigatorio</div></div>
+    <div class="form-row">
+      <div class="form-group"><label>Prazo</label><input type="text" id="f-prazo-marco" placeholder="Mes 1" value="${m ? m.prazo : ''}" /></div>
+      <div class="form-group"><label>Prioridade</label>
+        <select id="f-prio">
+          ${['Alta','Media','Baixa'].map(o => `<option ${m&&m.prioridade===o?'selected':''}>${o}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label>Status</label>
+      <select id="f-status-marco">
+        ${['Pendente','Em Andamento','Concluido','Bloqueado','Aguardando'].map(o => `<option ${m&&m.status===o?'selected':''}>${o}</option>`).join('')}
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarMarco(${id||'null'})">Salvar</button>
+    </div>
+  `;
+  abrirModal(html);
+}
+
+function salvarMarco(id) {
+  const v = document.getElementById('f-marco').value.trim();
+  if (!v) { document.getElementById('f-marco').classList.add('field-error'); document.getElementById('err-marco').classList.add('show'); return; }
+  document.getElementById('f-marco').classList.remove('field-error');
+  document.getElementById('err-marco').classList.remove('show');
+
+  const obj = {
+    id: id || nextId(state.marcos),
+    marco: v,
+    prazo: document.getElementById('f-prazo-marco').value.trim(),
+    prioridade: document.getElementById('f-prio').value,
+    status: document.getElementById('f-status-marco').value
+  };
+
+  if (id) { const idx = state.marcos.findIndex(x => x.id === id); state.marcos[idx] = obj; showToast('Marco atualizado!'); }
+  else { state.marcos.push(obj); showToast('Marco adicionado!'); }
+  saveState('marcos');
+  fecharModal();
+  renderMarcos();
+}
+
+function deleteMarco(id) {
+  if (!confirm('Excluir este marco?')) return;
+  state.marcos = state.marcos.filter(x => x.id !== id);
+  saveState('marcos');
+  renderMarcos();
+  showToast('Marco excluido.');
+}
+
+// ═══════════════════════════════════════════
+// EPISODIOS
+// ═══════════════════════════════════════════
+function renderEpisodios() {
+  const tbody = document.getElementById('episodios-tbody');
+  if (state.episodios.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Nenhum episodio cadastrado. Clique em "+ Adicionar Episodio".</td></tr>';
+    return;
+  }
+  tbody.innerHTML = state.episodios.map(e => `
+    <tr>
+      <td><strong>Ep. ${e.numero}</strong></td>
+      <td>${e.data}</td>
+      <td><span class="badge ${e.tipo==='ESTREIA'?'badge-verde':'badge-amarelo'}">${e.tipo}</span></td>
+      <td style="max-width:200px;font-size:12px;">${e.tema}</td>
+      <td style="font-size:12px;">${e.quadro}</td>
+      <td style="font-size:12px;">${e.convidado}</td>
+      <td style="font-size:12px;">${e.patrocinador || '<em style="color:var(--cinza-texto);">Sem patrocinio</em>'}</td>
+      <td>
+        <select class="inline-select" onchange="updateStatusEpisodio(${e.id}, this.value)">
+          ${['Planejado','Em Producao','Gravado','Editado','Publicado'].map(o => `<option ${e.status===o?'selected':''}>${o}</option>`).join('')}
+        </select>
+      </td>
+      <td><div class="action-btns">
+        <button class="btn-icon btn-edit" onclick="openModalEpisodio(${e.id})">✏️</button>
+        <button class="btn-icon btn-delete" onclick="deleteEpisodio(${e.id})">🗑️</button>
+      </div></td>
+    </tr>
+  `).join('');
+}
+
+function updateStatusEpisodio(id, status) {
+  const idx = state.episodios.findIndex(x => x.id === id);
+  if (idx >= 0) { state.episodios[idx].status = status; saveState('episodios'); showToast('Status atualizado!'); }
+}
+
+function openModalEpisodio(id) {
+  const e = id ? state.episodios.find(x => x.id === id) : null;
+  const html = `
+    <button class="modal-close" onclick="fecharModal()">✕</button>
+    <h3>${e ? 'Editar Episodio' : 'Novo Episodio'}</h3>
+    <div class="form-row">
+      <div class="form-group required"><label>Numero</label><input type="text" id="f-ep-num" placeholder="01" value="${e ? e.numero : ''}" /><div class="error-msg" id="err-ep-num">Campo obrigatorio</div></div>
+      <div class="form-group"><label>Data de Exibicao</label><input type="text" id="f-ep-data" placeholder="DD/MM/AAAA" value="${e ? e.data : ''}" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Tipo</label>
+        <select id="f-ep-tipo">
+          ${['PILOTO','ESTREIA','REGULAR','ESPECIAL'].map(o => `<option ${e&&e.tipo===o?'selected':''}>${o}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>Status</label>
+        <select id="f-ep-status">
+          ${['Planejado','Em Producao','Gravado','Editado','Publicado'].map(o => `<option ${e&&e.status===o?'selected':''}>${o}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="form-group required"><label>Tema do Episodio</label><input type="text" id="f-ep-tema" value="${e ? e.tema : ''}" /><div class="error-msg" id="err-ep-tema">Campo obrigatorio</div></div>
+    <div class="form-row">
+      <div class="form-group"><label>Quadro Principal</label>
+        <select id="f-ep-quadro">
+          ${['Saude sem Misterio','Alerta Medico','Tecnologia que Salva','Historias que Inspiram'].map(o => `<option ${e&&e.quadro===o?'selected':''}>${o}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>Convidado (especialidade)</label><input type="text" id="f-ep-conv" value="${e ? e.convidado : ''}" /></div>
+    </div>
+    <div class="form-group"><label>Patrocinador do Episodio</label><input type="text" id="f-ep-pat" placeholder="Opcional" value="${e ? e.patrocinador : ''}" /></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarEpisodio(${id||'null'})">Salvar</button>
+    </div>
+  `;
+  abrirModal(html);
+}
+
+function salvarEpisodio(id) {
+  let ok = true;
+  ['ep-num','ep-tema'].forEach(f => {
+    const v = document.getElementById('f-' + f).value.trim();
+    if (!v) { document.getElementById('f-'+f).classList.add('field-error'); document.getElementById('err-'+f).classList.add('show'); ok = false; }
+    else { document.getElementById('f-'+f).classList.remove('field-error'); document.getElementById('err-'+f).classList.remove('show'); }
+  });
+  if (!ok) return;
+
+  const obj = {
+    id: id || nextId(state.episodios),
+    numero: document.getElementById('f-ep-num').value.trim(),
+    data: document.getElementById('f-ep-data').value.trim(),
+    tipo: document.getElementById('f-ep-tipo').value,
+    tema: document.getElementById('f-ep-tema').value.trim(),
+    quadro: document.getElementById('f-ep-quadro').value,
+    convidado: document.getElementById('f-ep-conv').value.trim(),
+    patrocinador: document.getElementById('f-ep-pat').value.trim(),
+    status: document.getElementById('f-ep-status').value
+  };
+
+  if (id) { const idx = state.episodios.findIndex(x => x.id === id); state.episodios[idx] = obj; showToast('Episodio atualizado!'); }
+  else { state.episodios.push(obj); showToast('Episodio adicionado!'); }
+  saveState('episodios');
+  fecharModal();
+  renderEpisodios();
+}
+
+function deleteEpisodio(id) {
+  if (!confirm('Excluir este episodio?')) return;
+  state.episodios = state.episodios.filter(x => x.id !== id);
+  saveState('episodios');
+  renderEpisodios();
+  showToast('Episodio excluido.');
+}
+
+// ═══════════════════════════════════════════
+// KPIs
+// ═══════════════════════════════════════════
+function renderKPIs() {
+  const totalPipeline = state.metricas.receitaAnual;
+  const fechados = state.pipeline.filter(p => p.estagio === 'Fechado').reduce((s, x) => s + Number(x.valor), 0);
+  const pctPipeline = Math.min(100, Math.round((fechados / totalPipeline) * 100));
+
+  const totalMarcos = state.marcos.length;
+  const concluidos = state.marcos.filter(m => m.status === 'Concluido').length;
+  const pctMarcos = totalMarcos > 0 ? Math.round((concluidos / totalMarcos) * 100) : 0;
+
+  const totalEquipe = state.equipe.length;
+  const contratados = state.equipe.filter(m => m.status === 'Contratado').length;
+  const pctEquipe = totalEquipe > 0 ? Math.round((contratados / totalEquipe) * 100) : 0;
+
+  const totalEp = 52;
+  const publicados = state.episodios.filter(e => e.status === 'Publicado').length;
+  const pctEp = Math.round((publicados / totalEp) * 100);
+
+  const set = (bar, pct, label) => {
+    const el = document.getElementById(bar);
+    const lb = document.getElementById(label);
+    if (el) el.style.width = pct + '%';
+    if (lb) lb.textContent = pct + '%';
+  };
+
+  set('kpi-pipeline-bar', pctPipeline, 'kpi-pipeline-pct');
+  set('kpi-marcos-bar', pctMarcos, 'kpi-marcos-pct');
+  set('kpi-equipe-bar', pctEquipe, 'kpi-equipe-pct');
+  set('kpi-ep-bar', pctEp, 'kpi-ep-pct');
+}
+
+// ═══════════════════════════════════════════
+// CONFIGURACOES
+// ═══════════════════════════════════════════
+function renderConfig() {
+  const cfg = state.config;
+  const m = state.metricas;
+  document.getElementById('cfg-programa').value = cfg.programa;
+  document.getElementById('cfg-canal').value = cfg.canal;
+  document.getElementById('cfg-fase').value = cfg.faseAtual;
+  document.getElementById('cfg-progresso').value = cfg.progressoFase;
+  const dispR = document.getElementById('cfg-receita-display');
+  if (dispR) dispR.textContent = formatReais(m.receitaAnual);
+  document.getElementById('cfg-investimento').value = m.investimento;
+  const dispB = document.getElementById('cfg-breakeven-display');
+  if (dispB) dispB.textContent = m.breakeven ? 'Mes ' + m.breakeven : '—';
+  document.getElementById('cfg-cotas').value = m.cotasDisponiveis;
+}
+
+function salvarConfig() {
+  state.config.programa = document.getElementById('cfg-programa').value.trim();
+  state.config.canal = document.getElementById('cfg-canal').value.trim();
+  state.config.faseAtual = document.getElementById('cfg-fase').value.trim();
+  state.config.progressoFase = Number(document.getElementById('cfg-progresso').value);
+  saveState('config');
+  showToast('Configuracoes salvas!');
+}
+
+function salvarMetricasEditaveis() {
+  state.metricas.investimento = Number(document.getElementById('cfg-investimento').value);
+  state.metricas.cotasDisponiveis = Number(document.getElementById('cfg-cotas').value);
+  saveState('metricas');
+  renderDashboard();
+  showToast('Investimento e Cotas salvos!');
+}
+
+function confirmarReset() {
+  if (!confirm('Tem certeza? Todos os dados editados serao perdidos e o sistema voltara para os dados originais.')) return;
+  Object.keys(DEFAULT_DATA).forEach(k => {
+    state[k] = JSON.parse(JSON.stringify(DEFAULT_DATA[k]));
+    localStorage.removeItem('foco_saude_' + k);
+  });
+  renderConfig();
+  showToast('Dados resetados com sucesso!', 'success');
+}
+
+// ═══════════════════════════════════════════
+// PRICING TABLE EDITAVEL
+// ═══════════════════════════════════════════
+function renderPricing() {
+  const tbody = document.getElementById('pricing-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = state.pricing.map(p => `
+    <tr data-id="${p.id}">
+      <td><input class="editable-cell" value="${p.servico}" oninput="markPricingDirty()" data-field="servico" data-id="${p.id}" /></td>
+      <td class="valor-cell"><input class="editable-cell" value="${p.valor}" oninput="markPricingDirty()" data-field="valor" data-id="${p.id}" /></td>
+      <td><input class="editable-cell" value="${p.formato}" oninput="markPricingDirty()" data-field="formato" data-id="${p.id}" /></td>
+      <td><input class="editable-cell" value="${p.descricao}" oninput="markPricingDirty()" data-field="descricao" data-id="${p.id}" /></td>
+      <td><button class="btn-delete-small" onclick="deletePricingRow(${p.id})" title="Excluir">&#128465;</button></td>
+    </tr>
+  `).join('');
+}
+
+function markPricingDirty() {
+  const btn = document.getElementById('btn-save-pricing');
+  if (btn) btn.style.display = 'inline-flex';
+}
+
+function savePricing() {
+  document.querySelectorAll('#pricing-tbody tr').forEach(tr => {
+    const id = Number(tr.dataset.id);
+    const idx = state.pricing.findIndex(p => p.id === id);
+    if (idx < 0) return;
+    tr.querySelectorAll('input[data-field]').forEach(inp => {
+      state.pricing[idx][inp.dataset.field] = inp.value;
+    });
+  });
+  saveState('pricing');
+  const btn = document.getElementById('btn-save-pricing');
+  if (btn) btn.style.display = 'none';
+  showToast('Tabela de precos salva!');
+}
+
+function addPricingRow() {
+  const newItem = {
+    id: state.pricing.length > 0 ? Math.max(...state.pricing.map(p => p.id)) + 1 : 1,
+    servico: 'Novo servico',
+    valor: 'R$ 0',
+    formato: 'A definir',
+    descricao: ''
+  };
+  state.pricing.push(newItem);
+  saveState('pricing');
+  renderPricing();
+  markPricingDirty();
+}
+
+function deletePricingRow(id) {
+  if (!confirm('Excluir este item da tabela?')) return;
+  state.pricing = state.pricing.filter(p => p.id !== id);
+  saveState('pricing');
+  renderPricing();
+  showToast('Item excluido.');
+}
+
+// ═══════════════════════════════════════════
+// MODAL ENGINE
+// ═══════════════════════════════════════════
+function abrirModal(html) {
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function fecharModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function fecharModalPeloOverlay(e) {
+  if (e.target === document.getElementById('modal-overlay')) fecharModal();
+}
+
+// ESC fecha modal
+document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharModal(); });
+
+// ═══════════════════════════════════════════
+// FINANCEIRO EDITAVEL
+// ═══════════════════════════════════════════
+function colValor(v) {
+  const neg = String(v).startsWith('-');
+  const pos = String(v).startsWith('+');
+  const cor = neg ? '#C0392B' : (pos ? 'var(--verde)' : '');
+  return cor ? `style="color:${cor};"` : '';
+}
+
+function parseReais(str) {
+  if (!str) return 0;
+  const n = String(str).replace(/[^0-9,.-]/g,'').replace(/\./g,'').replace(',','.');
+  return parseFloat(n) || 0;
+}
+function formatReais(num) {
+  if (!num && num !== 0) return 'R$ 0';
+  const abs = Math.abs(num);
+  const formatted = abs.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
+  return (num < 0 ? '-R$ ' : 'R$ ') + formatted;
+}
+
+function calcTotaisFinanceiro() {
+  // Le dos inputs visiveis na tela (nao do state, pois pode nao estar salvo ainda)
+  let totalReceita = 0;
+  document.querySelectorAll('[data-fin="receitaFontes"][data-field="valor"]').forEach(inp => {
+    totalReceita += parseReais(inp.value);
+  });
+
+  let totalCusto = 0;
+  document.querySelectorAll('[data-fin="custos"][data-field="valor"]').forEach(inp => {
+    totalCusto += parseReais(inp.value);
+  });
+
+  const resultado = totalReceita - totalCusto;
+
+  const elRV = document.getElementById('fin-receita-total-valor');
+  const elRP = document.getElementById('fin-receita-total-pct');
+  const elCV = document.getElementById('fin-custos-total-valor');
+  const elCP = document.getElementById('fin-custos-total-pct');
+  if (elRV) elRV.textContent = totalReceita > 0 ? formatReais(totalReceita) : '—';
+  if (elRP) elRP.textContent = '100%';
+  if (elCV) elCV.textContent = totalCusto > 0 ? formatReais(totalCusto) : '—';
+  if (elCP) elCP.textContent = '100%';
+
+  // Atualiza card de Resultado (card id=3)
+  // Atualiza pct de cada linha de receita
+  document.querySelectorAll('[data-pct-rec]').forEach(el => {
+    const id = el.dataset.pctRec;
+    const inp = document.querySelector(`[data-fin="receitaFontes"][data-id="${id}"][data-field="valor"]`);
+    const val = inp ? parseReais(inp.value) : 0;
+    el.textContent = totalReceita > 0 ? (val / totalReceita * 100).toFixed(1) + '%' : '0%';
+  });
+
+  // Atualiza pct de cada linha de custo
+  document.querySelectorAll('[data-pct-cus]').forEach(el => {
+    const id = el.dataset.pctCus;
+    const inp = document.querySelector(`[data-fin="custos"][data-id="${id}"][data-field="valor"]`);
+    const val = inp ? parseReais(inp.value) : 0;
+    el.textContent = totalCusto > 0 ? (val / totalCusto * 100).toFixed(1) + '%' : '0%';
+  });
+
+  // Atualiza cards travados em tempo real
+  const elCardRec = document.getElementById('fin-card-receita');
+  if (elCardRec) elCardRec.textContent = totalReceita > 0 ? formatReais(totalReceita) : '—';
+  const elCardRes = document.getElementById('fin-card-resultado');
+  if (elCardRes) {
+    elCardRes.textContent = formatReais(resultado);
+    elCardRes.style.color = resultado >= 0 ? 'var(--verde)' : '#C0392B';
+  }
+
+  return { totalReceita, totalCusto, resultado };
+}
+
+function renderFinanceiro() {
+  const f = state.financeiro;
+  const m = state.metricas;
+
+  // Cards calculados (1=Receita, 3=Resultado, 4=Break-even): so exibem
+  // Card 2 (Investimento): editavel
+  const totalRec = f.receitaFontes.reduce((s,r) => s + parseReais(r.valor), 0);
+  const totalCus = f.custos.reduce((s,c) => s + parseReais(c.valor), 0);
+  const resultado = totalRec - totalCus;
+
+  const cardHTML = [
+    // Card 1 — Receita Ano 1 — TRAVADO
+    `<div class="card card-metric">
+      <div class="label">${f.cards[0]?.label||'RECEITA ANO 1'}</div>
+      <div class="value" id="fin-card-receita" style="color:var(--azul);">${formatReais(totalRec)}</div>
+      <div class="sub">Calculado pela tabela de receitas</div>
+    </div>`,
+    // Card 2 — Investimento — EDITAVEL
+    `<div class="card card-metric" data-fin-card="2">
+      <div class="form-group" style="margin:0 0 6px;">
+        <input class="editable-cell" value="${f.cards[1]?.label||'INVESTIMENTO'}" oninput="markFinDirty()" data-fin="cards" data-id="2" data-field="label" style="font-size:11px;font-weight:600;color:var(--cinza-texto);text-transform:uppercase;letter-spacing:0.5px;" />
+      </div>
+      <input class="editable-cell" value="${formatReais(m.investimento)}" oninput="markFinDirty()" data-fin="cards" data-id="2" data-field="value" style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--azul);" />
+      <input class="editable-cell" value="${f.cards[1]?.sub||'Fases 1 e 2'}" oninput="markFinDirty()" data-fin="cards" data-id="2" data-field="sub" style="font-size:12px;color:var(--cinza-texto);margin-top:4px;" />
+    </div>`,
+    // Card 3 — Resultado — TRAVADO
+    `<div class="card card-metric">
+      <div class="label">${f.cards[2]?.label||'RESULTADO OP.'}</div>
+      <div class="value" id="fin-card-resultado" style="${resultado >= 0 ? 'color:var(--verde)' : 'color:#C0392B'};">${formatReais(resultado)}</div>
+      <div class="sub">Receita total menos custos</div>
+    </div>`,
+    // Card 4 — Break-even — TRAVADO
+    `<div class="card card-metric">
+      <div class="label">${f.cards[3]?.label||'BREAK-EVEN'}</div>
+      <div class="value" id="fin-card-breakeven" style="color:var(--azul);">Mes ${m.breakeven||'—'}</div>
+      <div class="sub">Calculado pelo fluxo de caixa</div>
+    </div>`
+  ];
+  document.getElementById('fin-cards').innerHTML = cardHTML.join('');
+
+  // Grafico (so texto de rodape editavel)
+  document.getElementById('fin-grafico-card').innerHTML = `
+    <h3>Visao Financeira Ano 1</h3>
+    <div class="bar-chart">
+      <div class="bar-group"><div class="bar-value">${formatReais(m.receitaAnual)}</div><div class="bar bar-receita"></div><div class="bar-label">Receita</div></div>
+      <div class="bar-group"><div class="bar-value">${formatReais(m.investimento)}</div><div class="bar bar-custo"></div><div class="bar-label">Custos</div></div>
+      <div class="bar-group"><div class="bar-value">—</div><div class="bar bar-result"></div><div class="bar-label">Resultado</div></div>
+    </div>
+    <input class="editable-cell" value="${f.grafico}" oninput="markFinDirty()" data-fin="grafico" style="font-size:12px;color:var(--cinza-texto);margin-top:8px;width:100%;" />
+  `;
+
+  // Receita por Fonte
+  document.getElementById('fin-receita-tbody').innerHTML = f.receitaFontes.map(r => {
+    if (r.fromPipeline) {
+      return `<tr data-id="${r.id}" style="background:#f0fff4;">
+        <td style="font-size:13px;color:var(--azul);">${r.fonte} <span style="background:#00A878;color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;">Pipeline</span></td>
+        <td style="font-weight:600;color:var(--verde);">${r.valor}</td>
+        <td><span class="calc-locked" data-pct-rec="${r.id}">—</span></td>
+        <td style="text-align:center;" title="Controlado pelo Pipeline">🔒</td>
+      </tr>`;
+    }
+    return `<tr data-id="${r.id}">
+      <td><input class="editable-cell" value="${r.fonte}" oninput="markFinDirty()" data-fin="receitaFontes" data-id="${r.id}" data-field="fonte" /></td>
+      <td><input class="editable-cell" value="${r.valor}" oninput="markFinDirty();calcTotaisFinanceiro()" data-fin="receitaFontes" data-id="${r.id}" data-field="valor" /></td>
+      <td><span class="calc-locked" data-pct-rec="${r.id}">—</span></td>
+      <td><button class="btn-delete-small" onclick="deleteFinRow('receitaFontes',${r.id})" title="Excluir">&#128465;</button></td>
+    </tr>`;
+  }).join('');
+
+  // Custos
+  document.getElementById('fin-custos-tbody').innerHTML = f.custos.map(c => `
+    <tr data-id="${c.id}">
+      <td><input class="editable-cell" value="${c.item}" oninput="markFinDirty()" data-fin="custos" data-id="${c.id}" data-field="item" /></td>
+      <td><input class="editable-cell" value="${c.valor}" oninput="markFinDirty();calcTotaisFinanceiro()" data-fin="custos" data-id="${c.id}" data-field="valor" /></td>
+      <td><span class="calc-locked" data-pct-cus="${c.id}">—</span></td>
+      <td><button class="btn-delete-small" onclick="deleteFinRow('custos',${c.id})" title="Excluir">&#128465;</button></td>
+    </tr>
+  `).join('');
+
+  // Cenarios
+  const cenBadge = ['badge-vermelho','badge-amarelo','badge-verde'];
+  document.getElementById('fin-cenarios-tbody').innerHTML = f.cenarios.map((c, i) => `
+    <tr data-id="${c.id}">
+      <td><input class="editable-cell" value="${c.cenario}" oninput="markFinDirty()" data-fin="cenarios" data-id="${c.id}" data-field="cenario" style="font-weight:600;" /></td>
+      <td><input class="editable-cell" value="${c.ocupacao}" oninput="markFinDirty()" data-fin="cenarios" data-id="${c.id}" data-field="ocupacao" /></td>
+      <td><input class="editable-cell" value="${c.receita}" oninput="markFinDirty();calcCenarioLinha(this)" data-fin="cenarios" data-id="${c.id}" data-field="receita" /></td>
+      <td><input class="editable-cell" value="${c.custo}" oninput="markFinDirty();calcCenarioLinha(this)" data-fin="cenarios" data-id="${c.id}" data-field="custo" /></td>
+      <td ${colValor(c.resultado)}><span class="calc-locked" data-cen-res="${c.id}" style="font-weight:700;">${c.resultado}</span></td>
+      <td><input class="editable-cell" value="${c.margem}" oninput="markFinDirty()" data-fin="cenarios" data-id="${c.id}" data-field="margem" /></td>
+      <td><button class="btn-delete-small" onclick="deleteFinRow('cenarios',${c.id})" title="Excluir">&#128465;</button></td>
+    </tr>
+  `).join('');
+
+  // Fluxo de Caixa
+  document.getElementById('fin-fluxo-tbody').innerHTML = f.fluxo.map(r => `
+    <tr data-id="${r.id}">
+      <td><input class="editable-cell" value="${r.mes}" oninput="markFinDirty()" data-fin="fluxo" data-id="${r.id}" data-field="mes" /></td>
+      <td><input class="editable-cell" value="${r.receita}" oninput="markFinDirty();calcFluxoLinha(this)" data-fin="fluxo" data-id="${r.id}" data-field="receita" /></td>
+      <td><input class="editable-cell" value="${r.custo}" oninput="markFinDirty();calcFluxoLinha(this)" data-fin="fluxo" data-id="${r.id}" data-field="custo" /></td>
+      <td ${colValor(r.resultado)}><span class="calc-locked" data-fluxo-res="${r.id}">${r.resultado}</span></td>
+      <td ${colValor(r.saldo)}><span class="calc-locked" data-fluxo-sal="${r.id}">${r.saldo}</span></td>
+      <td><button class="btn-delete-small" onclick="deleteFinRow('fluxo',${r.id})" title="Excluir">&#128465;</button></td>
+    </tr>
+  `).join('');
+
+  setTimeout(calcTotaisFinanceiro, 10);
+}
+
+function calcCenarioLinha(inp) {
+  const tr = inp.closest('tr');
+  if (!tr) return;
+  const id = Number(tr.dataset.id);
+  const rec = parseReais(tr.querySelector('[data-field="receita"]')?.value);
+  const cus = parseReais(tr.querySelector('[data-field="custo"]')?.value);
+  const res = rec - cus;
+  const elRes = tr.querySelector('[data-cen-res]');
+  if (elRes) elRes.textContent = formatReais(res);
+}
+
+function calcFluxoLinha(inp) {
+  const tr = inp.closest('tr');
+  if (!tr) return;
+  const id = Number(tr.dataset.id);
+  const rec = parseReais(tr.querySelector('[data-field="receita"]')?.value);
+  const cus = parseReais(tr.querySelector('[data-field="custo"]')?.value);
+  const res = rec - cus;
+  const elRes = tr.querySelector('[data-fluxo-res]');
+  if (elRes) elRes.textContent = formatReais(res);
+}
+
+function markFinDirty() {
+  const btn = document.getElementById('btn-save-financeiro');
+  if (btn) btn.style.display = 'inline-flex';
+}
+
+function saveFinanceiro() {
+  const f = state.financeiro;
+
+  // Cards
+  document.querySelectorAll('[data-fin="cards"]').forEach(inp => {
+    const id = Number(inp.dataset.id);
+    const field = inp.dataset.field;
+    const idx = f.cards.findIndex(c => c.id === id);
+    if (idx >= 0) f.cards[idx][field] = inp.value;
+  });
+
+  // Grafico
+  const gEl = document.querySelector('[data-fin="grafico"]');
+  if (gEl) f.grafico = gEl.value;
+
+  // Receita fontes (salva fonte e valor; pct calculado abaixo)
+  document.querySelectorAll('[data-fin="receitaFontes"]').forEach(inp => {
+    const id = Number(inp.dataset.id);
+    const idx = f.receitaFontes.findIndex(r => r.id === id);
+    if (idx >= 0) f.receitaFontes[idx][inp.dataset.field] = inp.value;
+  });
+  // Atualiza pct calculado no state
+  const _totRec = f.receitaFontes.reduce((s,r) => s + parseReais(r.valor), 0);
+  f.receitaFontes.forEach(r => { r.pct = _totRec > 0 ? (parseReais(r.valor) / _totRec * 100).toFixed(1) + '%' : '0%'; });
+  // totais calculados automaticamente — nao lidos de input
+
+  // Custos (salva item e valor; pct calculado abaixo)
+  document.querySelectorAll('[data-fin="custos"]').forEach(inp => {
+    const id = Number(inp.dataset.id);
+    const idx = f.custos.findIndex(c => c.id === id);
+    if (idx >= 0) f.custos[idx][inp.dataset.field] = inp.value;
+  });
+  // Atualiza pct calculado no state
+  const _totCus = f.custos.reduce((s,c) => s + parseReais(c.valor), 0);
+  f.custos.forEach(c => { c.pct = _totCus > 0 ? (parseReais(c.valor) / _totCus * 100).toFixed(1) + '%' : '0%'; });
+  // totais calculados automaticamente — nao lidos de input
+
+  // Cenarios
+  document.querySelectorAll('[data-fin="cenarios"]').forEach(inp => {
+    const id = Number(inp.dataset.id);
+    const idx = f.cenarios.findIndex(c => c.id === id);
+    if (idx >= 0) f.cenarios[idx][inp.dataset.field] = inp.value;
+  });
+
+  // Fluxo
+  document.querySelectorAll('[data-fin="fluxo"]').forEach(inp => {
+    const id = Number(inp.dataset.id);
+    const idx = f.fluxo.findIndex(r => r.id === id);
+    if (idx >= 0) f.fluxo[idx][inp.dataset.field] = inp.value;
+  });
+
+  saveState('financeiro');
+
+  // Propagar para metricas: receita total e break-even
+  const totalRec = state.financeiro.receitaFontes.reduce((s,r) => s + parseReais(r.valor), 0);
+  state.metricas.receitaAnual = totalRec;
+
+  // Break-even: primeiro mes do fluxo com saldo acumulado >= 0
+  let be = 0;
+  for (const row of state.financeiro.fluxo) {
+    const saldo = parseReais(row.saldo);
+    const mesNum = parseInt(row.mes);
+    if (saldo >= 0 && mesNum > 0) { be = mesNum; break; }
+  }
+  if (!be) {
+    // fallback: contar por posicao
+    for (let i = 0; i < state.financeiro.fluxo.length; i++) {
+      if (parseReais(state.financeiro.fluxo[i].saldo) >= 0) { be = i + 1; break; }
+    }
+  }
+  if (be > 0) state.metricas.breakeven = be;
+
+  saveState('metricas');
+  renderDashboard();
+  renderConfig();
+  calcTotaisFinanceiro();
+
+  document.getElementById('btn-save-financeiro').style.display = 'none';
+  showToast('Financeiro salvo! Dashboard e Configuracoes atualizados.');
+}
+
+function addFinRow(secao) {
+  const f = state.financeiro;
+  const newId = () => {
+    const arr = f[secao];
+    return arr.length > 0 ? Math.max(...arr.map(x => x.id)) + 1 : 1;
+  };
+  if (secao === 'receitaFontes') f.receitaFontes.push({ id:newId(), fonte:'Nova fonte', valor:'R$ 0', pct:'0%' });
+  if (secao === 'custos') f.custos.push({ id:newId(), item:'Novo item', valor:'R$ 0', pct:'0%' });
+  if (secao === 'cenarios') f.cenarios.push({ id:newId(), cenario:'Novo cenario', ocupacao:'0%', receita:'R$ 0', custo:'R$ 0', resultado:'R$ 0', margem:'0%' });
+  if (secao === 'fluxo') f.fluxo.push({ id:newId(), mes:'Mes '+(f.fluxo.length+1), receita:'R$ 0', custo:'R$ 0', resultado:'R$ 0', saldo:'R$ 0' });
+  saveState('financeiro');
+  renderFinanceiro();
+  markFinDirty();
+}
+
+function deleteFinRow(secao, id) {
+  if (!confirm('Excluir esta linha?')) return;
+  state.financeiro[secao] = state.financeiro[secao].filter(x => x.id !== id);
+  saveState('financeiro');
+  renderFinanceiro();
+  showToast('Linha excluida.');
+}
+
+// ═══════════════════════════════════════════
+// SENHA DE ACESSO
+// ═══════════════════════════════════════════
+function checkAuth() {
+  const senhaCorreta = localStorage.getItem('foco_senha') || 'foco2026';
+  const autenticado  = sessionStorage.getItem('foco_auth');
+  if (autenticado === '1') return;
+  const overlay = document.getElementById('login-overlay');
+  if (overlay) overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function tentarLogin() {
+  const input = document.getElementById('login-input').value;
+  const senhaCorreta = localStorage.getItem('foco_senha') || 'foco2026';
+  if (input === senhaCorreta) {
+    sessionStorage.setItem('foco_auth', '1');
+    document.getElementById('login-overlay').style.display = 'none';
+    document.body.style.overflow = '';
+  } else {
+    document.getElementById('login-erro').style.display = 'block';
+    document.getElementById('login-input').value = '';
+    document.getElementById('login-input').focus();
+  }
+}
+
+function alterarSenha() {
+  const nova = prompt('Digite a nova senha (minimo 4 caracteres):');
+  if (!nova || nova.length < 4) { alert('Senha invalida.'); return; }
+  const confirma = prompt('Confirme a nova senha:');
+  if (nova !== confirma) { alert('As senhas nao conferem.'); return; }
+  localStorage.setItem('foco_senha', nova);
+  showToast('Senha alterada com sucesso!');
+}
+
+// ═══════════════════════════════════════════
+// INICIALIZACAO
+// ═══════════════════════════════════════════
+window.addEventListener('load', () => {
+  checkAuth();
+  const hash = window.location.hash.replace('#', '');
+  if (hash) {
+    showSection(hash);
+  } else {
+    renderDashboard();
+    document.querySelector('.nav-item').classList.add('active');
+  }
+  renderPricing();
+  renderFinanceiro();
+});
+</script>
+</body>
+</html>
