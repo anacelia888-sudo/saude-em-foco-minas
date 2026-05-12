@@ -1635,14 +1635,14 @@ function openModalProspect(id) {
   `;
   abrirModal(html);
   setTimeout(() => {
-    if (p) {
-      const base = p.valorBase || p.valor || 0;
-      const baseEl = document.getElementById('f-valor-base');
-      if (baseEl) { baseEl.value = base; baseEl.dataset.base = base; }
+    const cotaSel = document.getElementById('f-cota');
+    const descEl  = document.getElementById('f-desconto');
+    // Sempre busca o valor da tabela de precos, independente de ser edicao ou novo
+    if (cotaSel) autoFillValorPorCota(cotaSel);
+    // Restaura o desconto salvo (para edicao), sem forcar recalculo duplo
+    if (p && p.desconto && descEl) {
+      descEl.value = p.desconto;
       calcValorFinal();
-    } else {
-      const cotaSel = document.getElementById('f-cota');
-      if (cotaSel) autoFillValorPorCota(cotaSel);
     }
   }, 30);
 }
