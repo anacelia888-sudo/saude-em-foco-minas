@@ -3,166 +3,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Saúde em Foco Minas | Proposta Executiva</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <title>Foco em Saúde Minas | Proposta Executiva</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --green-1: #00C853;
-      --green-2: #00E676;
-      --green-3: #69F0AE;
-      --green-light: #B9F6CA;
-      --black-1: #000000;
-      --black-2: #0a0a0a;
-      --black-3: #111111;
-      --black-4: #1a1a1a;
-      --white: #ffffff;
-      --white-70: rgba(255,255,255,0.7);
-      --white-50: rgba(255,255,255,0.5);
-      --white-30: rgba(255,255,255,0.3);
-      --white-10: rgba(255,255,255,0.1);
+      --bg:        #F4F0EA;
+      --surface:   #ECE6DC;
+      --surface-2: #E4DDD0;
+      --ink:       #1A1A1A;
+      --ink-80:    rgba(26,26,26,0.80);
+      --ink-60:    rgba(26,26,26,0.60);
+      --ink-40:    rgba(26,26,26,0.40);
+      --muted:     #6E665B;
+      --accent:    #B8956A;
+      --accent-dim:#A38256;
+      --hairline:  #D9D2C5;
+      --dark:      #0E0D0B;
+      --dark-2:    #161410;
+      --cream:     #EFE9DD;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--black-1);
-      color: var(--white);
-      line-height: 1.6;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      font-weight: 300;
     }
 
-    /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--black-1); }
-    ::-webkit-scrollbar-thumb { background: var(--green-1); border-radius: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 0; }
 
-    /* Utility */
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
-    .text-gradient {
-      background: linear-gradient(135deg, var(--green-2), var(--green-3), var(--green-light));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .text-gradient-white {
-      background: linear-gradient(135deg, #fff, rgba(255,255,255,0.8));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .container { max-width: 1180px; margin: 0 auto; padding: 0 48px; }
+
+    .serif { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; }
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
     }
 
-    /* Animations */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(40px); }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-    @keyframes heartbeat-line {
-      0% { stroke-dashoffset: 1000; }
-      100% { stroke-dashoffset: 0; }
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    @keyframes glow {
-      0%, 100% { filter: drop-shadow(0 0 8px rgba(0,200,83,0.4)); }
-      50% { filter: drop-shadow(0 0 20px rgba(0,200,83,0.8)); }
-    }
-    @keyframes scrollDown {
-      0% { transform: translateY(0); opacity: 1; }
-      50% { transform: translateY(8px); opacity: 0.3; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .animate-on-scroll {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-    .animate-on-scroll.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 1.1s ease, transform 1.1s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* ===== NAVBAR ===== */
+    /* ===== NAV ===== */
     nav {
       position: fixed;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 100%;
       z-index: 1000;
-      padding: 16px 0;
-      transition: all 0.4s ease;
-      background: rgba(0,0,0,0.1);
-      backdrop-filter: blur(0px);
+      padding: 20px 0;
+      transition: all 0.5s ease;
+      background: rgba(244,240,234,0.0);
     }
     nav.scrolled {
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--white-10);
-      padding: 12px 0;
+      background: rgba(244,240,234,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--hairline);
+      padding: 14px 0;
     }
-    nav .container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-    }
-    .nav-logo svg { height: 32px; width: auto; }
-    .nav-logo span {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--white);
-      letter-spacing: -0.3px;
-    }
-    .nav-links { display: flex; gap: 32px; list-style: none; }
-    .nav-links a {
-      color: var(--white-70);
-      text-decoration: none;
-      font-size: 13px;
+    nav .container { display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+    .nav-mark { display: inline-flex; align-items: center; justify-content: center; }
+    .nav-mark img { height: 30px; display: block; }
+    .nav-logo .nav-word {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 17px;
       font-weight: 500;
+      color: var(--ink);
+      letter-spacing: 0.5px;
+    }
+    .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+    .nav-links a {
+      color: var(--ink-80);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
       transition: color 0.3s;
-      letter-spacing: 0.2px;
     }
-    .nav-links a:hover { color: var(--green-2); }
+    .nav-links a:hover { color: var(--accent); }
     .nav-cta {
-      background: linear-gradient(135deg, var(--green-1), var(--green-2));
-      color: var(--black-1) !important;
-      padding: 8px 20px;
-      border-radius: 50px;
-      font-weight: 600 !important;
-      font-size: 13px;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .nav-cta:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(0,200,83,0.4);
-    }
-
-    /* Mobile menu */
-    .menu-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
-    .menu-toggle span {
-      display: block; width: 24px; height: 2px;
-      background: var(--white); margin: 5px 0;
+      color: var(--ink) !important;
+      border: 1px solid var(--ink);
+      padding: 10px 22px;
+      letter-spacing: 1.5px !important;
       transition: all 0.3s;
     }
+    .nav-cta:hover { background: var(--ink); color: var(--bg) !important; }
+
+    .menu-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+    .menu-toggle span { display: block; width: 22px; height: 1px; background: var(--ink); margin: 6px 0; transition: all 0.3s; }
 
     /* ===== HERO ===== */
     .hero {
@@ -172,780 +122,574 @@
       justify-content: center;
       text-align: center;
       position: relative;
-      background: radial-gradient(ellipse at 50% 0%, rgba(0,200,83,0.08) 0%, transparent 60%),
-                  radial-gradient(ellipse at 80% 50%, rgba(0,230,118,0.04) 0%, transparent 50%),
-                  linear-gradient(180deg, var(--black-1) 0%, var(--black-2) 100%);
-      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(184,149,106,0.08) 0%, transparent 55%),
+        linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%);
+      padding: 140px 24px 80px;
     }
-    .hero::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: url('https://images.unsplash.com/photo-1584515933487-779824d29309?w=1920&q=80') center/cover no-repeat;
-      opacity: 0.08;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, rgba(0,200,83,0.06) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero-content { position: relative; z-index: 2; max-width: 900px; padding: 0 20px; }
+    .hero-content { position: relative; z-index: 2; max-width: 880px; }
     .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: var(--white-10);
-      border: 1px solid var(--white-10);
-      padding: 8px 20px;
-      border-radius: 50px;
-      font-size: 13px;
-      color: var(--green-3);
-      margin-bottom: 32px;
-      animation: fadeIn 1s ease;
-      backdrop-filter: blur(10px);
-    }
-    .hero-badge .dot {
-      width: 6px; height: 6px;
-      background: var(--green-2);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-    .hero-logo {
-      margin-bottom: 40px;
-      animation: fadeIn 1.2s ease, glow 3s ease infinite;
-    }
-    .hero-logo svg { height: 80px; width: auto; }
-    .hero h1 {
-      font-size: clamp(42px, 7vw, 80px);
-      font-weight: 800;
-      line-height: 1.05;
-      letter-spacing: -2px;
-      margin-bottom: 24px;
-      animation: fadeInUp 1s ease 0.2s both;
-    }
-    .hero p {
-      font-size: clamp(17px, 2.5vw, 22px);
-      color: var(--white-70);
-      max-width: 650px;
-      margin: 0 auto 48px;
-      line-height: 1.6;
-      font-weight: 300;
-      animation: fadeInUp 1s ease 0.4s both;
-    }
-    .hero-buttons {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
-      animation: fadeInUp 1s ease 0.6s both;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--green-1), var(--green-2));
-      color: var(--black-1);
-      padding: 16px 36px;
-      border-radius: 50px;
-      font-size: 16px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.3s;
-      border: none;
-      cursor: pointer;
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 40px rgba(0,200,83,0.4);
-    }
-    .btn-secondary {
-      background: transparent;
-      color: var(--white);
-      padding: 16px 36px;
-      border-radius: 50px;
-      font-size: 16px;
-      font-weight: 500;
-      text-decoration: none;
-      border: 1px solid var(--white-30);
-      transition: all 0.3s;
-    }
-    .btn-secondary:hover {
-      border-color: var(--green-2);
-      color: var(--green-2);
-      background: rgba(0,230,118,0.05);
-    }
-    .scroll-indicator {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      animation: scrollDown 2s infinite;
-    }
-    .scroll-indicator span { font-size: 11px; color: var(--white-50); letter-spacing: 2px; text-transform: uppercase; }
-    .scroll-indicator svg { width: 20px; height: 20px; stroke: var(--white-50); }
-
-    /* ===== SECTIONS ===== */
-    section { padding: 140px 0; position: relative; }
-
-    .section-label {
-      font-size: 13px;
-      font-weight: 600;
+      gap: 12px;
+      padding: 10px 22px;
+      border: 1px solid var(--hairline);
+      background: rgba(255,255,255,0.4);
+      font-size: 11px;
       letter-spacing: 3px;
       text-transform: uppercase;
-      color: var(--green-2);
-      margin-bottom: 16px;
+      color: var(--ink-80);
+      margin-bottom: 56px;
+      animation: fadeIn 1.2s ease;
     }
-    .section-title {
-      font-size: clamp(36px, 5vw, 56px);
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -1.5px;
-      margin-bottom: 20px;
-    }
-    .section-subtitle {
-      font-size: 18px;
-      color: var(--white-70);
-      max-width: 600px;
-      line-height: 1.6;
-      font-weight: 300;
-    }
-    .section-header { margin-bottom: 80px; }
-    .section-header.center { text-align: center; }
-    .section-header.center .section-subtitle { margin: 0 auto; }
+    .hero-badge .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
 
-    /* Divider gradient */
-    .section-divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--white-10), transparent);
-      margin: 0 auto;
-      max-width: 1200px;
+    .hero-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 48px;
+      animation: fadeUp 1s ease 0.2s both;
     }
+    .hero-logo img { height: 200px; display: block; }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(44px, 6.5vw, 78px);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.5px;
+      color: var(--ink);
+      margin-bottom: 28px;
+      animation: fadeUp 1s ease 0.4s both;
+    }
+    .hero h1 em { font-style: italic; color: var(--accent); font-weight: 400; }
+
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 56px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+      animation: fadeUp 1s ease 0.6s both;
+    }
+    .hero-meta-item { text-align: center; }
+    .hero-meta-item .label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .hero-meta-item .value { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; color: var(--ink); font-weight: 500; }
+
+    .hero p {
+      font-size: 17px;
+      color: var(--ink-80);
+      max-width: 620px;
+      margin: 0 auto 56px;
+      line-height: 1.7;
+      font-weight: 300;
+      animation: fadeUp 1s ease 0.8s both;
+    }
+    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; animation: fadeUp 1s ease 1s both; }
+
+    .btn-primary {
+      background: var(--ink);
+      color: var(--bg);
+      padding: 18px 40px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.4s ease;
+      border: 1px solid var(--ink);
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--accent); border-color: var(--accent); color: var(--dark); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--ink);
+      padding: 18px 40px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid var(--ink);
+      transition: all 0.4s;
+      display: inline-block;
+    }
+    .btn-secondary:hover { background: var(--ink); color: var(--bg); }
+
+    /* ===== SECTIONS ===== */
+    section { padding: 160px 0; position: relative; }
+    section.alt { background: var(--surface); }
+
+    .section-header { margin-bottom: 96px; max-width: 720px; }
+    .section-header.center { margin-left: auto; margin-right: auto; text-align: center; }
+    .section-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+      color: var(--ink);
+      margin-bottom: 24px;
+    }
+    .section-title em { font-style: italic; color: var(--accent); }
+    .section-sub {
+      font-size: 16px;
+      color: var(--ink-80);
+      line-height: 1.75;
+      font-weight: 300;
+      max-width: 560px;
+    }
+    .section-header.center .section-sub { margin: 0 auto; }
+
+    .divider { height: 1px; background: var(--hairline); width: 100%; }
 
     /* ===== CONCEITO ===== */
-    .conceito {
-      background: linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 50%, var(--black-2) 100%);
-      position: relative;
-    }
-    .conceito::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: url('https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=1920&q=80') center/cover no-repeat;
-      opacity: 0.06;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .conceito > * { position: relative; z-index: 1; }
     .conceito-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 60px;
-      align-items: center;
+      gap: 80px;
+      align-items: start;
     }
     .conceito-text h3 {
-      font-size: 28px;
-      font-weight: 700;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 30px;
+      font-weight: 500;
+      line-height: 1.25;
       margin-bottom: 20px;
-      letter-spacing: -0.5px;
+      color: var(--ink);
     }
-    .conceito-text p {
-      color: var(--white-70);
-      font-size: 16px;
-      line-height: 1.8;
-      font-weight: 300;
-    }
-    .conceito-cards { display: flex; flex-direction: column; gap: 20px; }
-    .conceito-card {
-      background: linear-gradient(135deg, var(--black-3), var(--black-4));
-      border: 1px solid var(--white-10);
-      border-radius: 20px;
-      padding: 32px;
-      transition: all 0.4s;
-    }
-    .conceito-card:hover {
-      border-color: var(--green-1);
-      transform: translateY(-4px);
-      box-shadow: 0 20px 60px rgba(0,200,83,0.1);
-    }
-    .conceito-card .icon {
-      width: 48px; height: 48px;
-      background: linear-gradient(135deg, var(--green-1), var(--green-2));
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 16px;
-    }
-    .conceito-card .icon svg { width: 24px; height: 24px; stroke: var(--black-1); fill: none; }
-    .conceito-card h4 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-    .conceito-card p { font-size: 14px; color: var(--white-50); line-height: 1.6; }
+    .conceito-text p { color: var(--ink-80); font-size: 16px; line-height: 1.8; }
+    .conceito-cards { display: flex; flex-direction: column; gap: 1px; background: var(--hairline); border: 1px solid var(--hairline); }
+    .conceito-card { background: var(--bg); padding: 36px 32px; }
+    .conceito-card .num { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 14px; font-style: italic; color: var(--accent); margin-bottom: 14px; letter-spacing: 1px; }
+    .conceito-card h4 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; font-weight: 500; margin-bottom: 8px; color: var(--ink); }
+    .conceito-card p { font-size: 14px; color: var(--ink-60); line-height: 1.7; }
 
     /* ===== FORMATO ===== */
-    .formato { background: linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 100%); }
     .formato-specs {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-      margin-bottom: 80px;
+      gap: 0;
+      margin-bottom: 96px;
+      border-top: 1px solid var(--hairline);
+      border-bottom: 1px solid var(--hairline);
     }
     .spec-card {
       text-align: center;
-      padding: 40px 24px;
-      background: linear-gradient(135deg, var(--black-3), var(--black-4));
-      border: 1px solid var(--white-10);
-      border-radius: 20px;
-      transition: all 0.4s;
+      padding: 56px 24px;
+      border-right: 1px solid var(--hairline);
     }
-    .spec-card:hover {
-      border-color: var(--green-1);
-      box-shadow: 0 0 40px rgba(0,200,83,0.08);
-    }
+    .spec-card:last-child { border-right: none; }
     .spec-card .number {
-      font-size: 48px;
-      font-weight: 800;
-      letter-spacing: -2px;
-      margin-bottom: 4px;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 56px;
+      font-weight: 400;
+      letter-spacing: -1px;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 10px;
     }
-    .spec-card .label { font-size: 14px; color: var(--white-50); font-weight: 400; }
+    .spec-card .number em { font-style: italic; color: var(--accent); }
+    .spec-card .label { font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
 
-    /* Timeline blocks */
-    .blocos-timeline { position: relative; padding-left: 40px; }
-    .blocos-timeline::before {
-      content: '';
-      position: absolute;
-      left: 15px;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: linear-gradient(180deg, var(--green-1), var(--green-2), transparent);
+    /* Blocos */
+    .blocos-wrap { max-width: 760px; margin: 0 auto; }
+    .blocos-intro {
+      text-align: center;
+      margin-bottom: 56px;
     }
-    .bloco-item {
+    .blocos-intro .eyebrow { margin-bottom: 16px; }
+    .blocos-intro h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 30px; font-weight: 400; color: var(--ink); }
+    .blocos-line {
       position: relative;
-      margin-bottom: 40px;
-      padding: 32px;
-      background: linear-gradient(135deg, var(--black-3), var(--black-4));
-      border: 1px solid var(--white-10);
-      border-radius: 20px;
-      transition: all 0.4s;
+      padding: 0 8px;
     }
-    .bloco-item:hover {
-      border-color: var(--green-1);
-      transform: translateX(8px);
+    .bloco-row {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--hairline);
     }
-    .bloco-item::before {
-      content: '';
-      position: absolute;
-      left: -33px;
-      top: 38px;
-      width: 12px; height: 12px;
-      background: var(--green-2);
-      border-radius: 50%;
-      box-shadow: 0 0 20px rgba(0,230,118,0.5);
+    .bloco-row:last-child { border-bottom: none; }
+    .bloco-row .step {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 14px;
+      font-style: italic;
+      color: var(--accent);
+      letter-spacing: 1px;
+      min-width: 110px;
     }
-    .bloco-item .bloco-tag {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--green-1), var(--green-2));
-      color: var(--black-1);
-      padding: 4px 14px;
-      border-radius: 50px;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 12px;
+    .bloco-row .step.break-step { color: var(--muted); }
+    .bloco-row .title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--ink);
+      flex: 1;
     }
-    .bloco-item h4 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-    .bloco-item p { color: var(--white-50); font-size: 14px; line-height: 1.6; }
-    .bloco-item .duration { color: var(--green-3); font-weight: 600; font-size: 13px; margin-top: 8px; }
+    .bloco-row .title.break-title { color: var(--ink-60); font-weight: 400; font-style: italic; }
+    .bloco-row .dur {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      min-width: 80px;
+      text-align: right;
+    }
+    .blocos-total {
+      margin-top: 28px;
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
 
     /* ===== QUADROS ===== */
-    .quadros {
-      background: linear-gradient(180deg, var(--black-1) 0%, var(--black-2) 100%);
-      position: relative;
-    }
-    .quadros::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: url('https://images.unsplash.com/photo-1585776245991-cf89dd7fc73a?w=1920&q=80') center/cover no-repeat;
-      opacity: 0.06;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .quadros > * { position: relative; z-index: 1; }
     .quadros-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
+      gap: 1px;
+      background: var(--hairline);
+      border: 1px solid var(--hairline);
     }
     .quadro-card {
-      background: linear-gradient(135deg, var(--black-3), var(--black-4));
-      border: 1px solid var(--white-10);
-      border-radius: 24px;
-      padding: 40px;
-      transition: all 0.5s;
-      position: relative;
-      overflow: hidden;
+      background: var(--bg);
+      padding: 48px 40px;
+      transition: background 0.4s;
     }
-    .quadro-card::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 3px;
-      background: linear-gradient(90deg, var(--green-1), var(--green-2));
-      opacity: 0;
-      transition: opacity 0.4s;
-    }
-    .quadro-card:hover { border-color: var(--green-1); transform: translateY(-6px); }
-    .quadro-card:hover::after { opacity: 1; }
-    .quadro-card .quadro-icon {
-      width: 56px; height: 56px;
-      background: linear-gradient(135deg, rgba(0,200,83,0.15), rgba(0,230,118,0.05));
-      border: 1px solid rgba(0,200,83,0.2);
-      border-radius: 16px;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 20px;
-    }
-    .quadro-card .quadro-icon svg { width: 28px; height: 28px; stroke: var(--green-2); fill: none; }
-    .quadro-card h3 { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
-    .quadro-card p { color: var(--white-50); font-size: 14px; line-height: 1.7; }
-    .quadro-card .quadro-meta {
-      display: flex;
-      gap: 16px;
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid var(--white-10);
-    }
-    .quadro-card .quadro-meta span {
-      font-size: 12px;
-      color: var(--green-3);
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+    .quadro-card:hover { background: var(--surface-2); }
+    .quadro-card .num { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 13px; font-style: italic; color: var(--accent); letter-spacing: 1px; margin-bottom: 14px; }
+    .quadro-card h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; font-weight: 500; margin-bottom: 10px; color: var(--ink); }
+    .quadro-card p { color: var(--ink-80); font-size: 15px; line-height: 1.7; font-weight: 300; }
 
-    /* ===== MODELO DE NEGOCIO ===== */
-    .negocio { background: linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 50%, var(--black-2) 100%); }
+    /* ===== NEGOCIO / COTAS ===== */
     .cotas-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-bottom: 80px;
+      gap: 32px;
+      margin-bottom: 64px;
     }
     .cota-card {
-      background: linear-gradient(135deg, var(--black-3), var(--black-4));
-      border: 1px solid var(--white-10);
-      border-radius: 24px;
-      padding: 48px 36px;
-      text-align: center;
-      transition: all 0.5s;
+      background: var(--bg);
+      border: 1px solid var(--hairline);
+      padding: 48px 40px;
       position: relative;
+      transition: all 0.4s;
     }
+    .cota-card:hover { border-color: var(--ink); }
     .cota-card.featured {
-      border-color: var(--green-1);
-      background: linear-gradient(135deg, rgba(0,200,83,0.08), var(--black-3));
-      transform: scale(1.05);
+      background: var(--dark);
+      border-color: var(--accent);
+      color: var(--cream);
     }
+    .cota-card.featured .cota-tier { color: var(--accent); }
+    .cota-card.featured h3 { color: var(--cream); }
+    .cota-card.featured .price-figure { color: var(--cream); }
+    .cota-card.featured .price-period { color: rgba(239,233,221,0.55); }
+    .cota-card.featured ul li { color: rgba(239,233,221,0.85); border-bottom-color: rgba(184,149,106,0.2); }
+    .cota-card.featured ul li::before { background: var(--accent); }
+    .cota-card.featured .cota-btn { background: var(--accent); color: var(--dark); border-color: var(--accent); }
+    .cota-card.featured .cota-btn:hover { background: transparent; color: var(--accent); }
     .cota-card.featured::before {
-      content: 'RECOMENDADO';
+      content: 'Exclusivo';
       position: absolute;
-      top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, var(--green-1), var(--green-2));
-      color: var(--black-1);
-      padding: 4px 20px;
-      border-radius: 50px;
-      font-size: 11px;
-      font-weight: 700;
+      top: -10px;
+      left: 32px;
+      background: var(--accent);
+      color: var(--dark);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 13px;
+      padding: 4px 14px;
       letter-spacing: 1px;
     }
-    .cota-card:hover { border-color: var(--green-1); transform: translateY(-8px); }
-    .cota-card.featured:hover { transform: scale(1.05) translateY(-8px); }
     .cota-card .cota-tier {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--green-2);
-      letter-spacing: 2px;
+      font-size: 11px;
+      letter-spacing: 3px;
       text-transform: uppercase;
+      color: var(--accent);
       margin-bottom: 12px;
     }
-    .cota-card h3 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
-    .cota-card .price {
-      font-size: 14px;
-      color: var(--white-50);
-      margin-bottom: 32px;
+    .cota-card h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 34px;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 6px;
     }
-    .cota-card .price strong {
-      font-size: 36px;
-      font-weight: 800;
-      color: var(--white);
-      display: block;
-      margin-top: 4px;
+    .cota-card .cota-slots { font-size: 12px; color: var(--muted); letter-spacing: 1px; margin-bottom: 32px; }
+    .cota-card.featured .cota-slots { color: rgba(239,233,221,0.55); }
+    .cota-card .price-figure {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 44px;
+      font-weight: 500;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 4px;
     }
-    .cota-card ul {
-      list-style: none;
-      text-align: left;
-      margin-bottom: 32px;
-    }
+    .cota-card .price-figure small { font-size: 18px; opacity: 0.6; font-weight: 400; }
+    .cota-card .price-period { font-size: 12px; color: var(--muted); letter-spacing: 1px; margin-bottom: 28px; }
+    .cota-card .price-semestre { font-size: 11px; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 28px; }
+    .cota-card ul { list-style: none; margin-bottom: 36px; }
     .cota-card ul li {
-      padding: 10px 0;
-      border-bottom: 1px solid var(--white-10);
+      padding: 12px 0;
+      border-bottom: 1px solid var(--hairline);
       font-size: 14px;
-      color: var(--white-70);
+      color: var(--ink-80);
       display: flex;
-      align-items: flex-start;
-      gap: 10px;
+      gap: 12px;
+      line-height: 1.5;
     }
     .cota-card ul li::before {
       content: '';
-      width: 18px; height: 18px;
-      min-width: 18px;
-      background: linear-gradient(135deg, var(--green-1), var(--green-2));
+      width: 4px; height: 4px;
+      min-width: 4px;
+      background: var(--accent);
       border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      margin-top: 2px;
+      margin-top: 8px;
     }
     .cota-card .cota-btn {
       display: block;
       width: 100%;
       padding: 14px;
-      border-radius: 50px;
       text-decoration: none;
-      font-weight: 600;
-      font-size: 15px;
-      transition: all 0.3s;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
       text-align: center;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      transition: all 0.3s;
     }
-    .cota-card .cota-btn.primary {
-      background: linear-gradient(135deg, var(--green-1), var(--green-2));
-      color: var(--black-1);
+    .cota-card .cota-btn:hover { background: var(--ink); color: var(--bg); }
+
+    /* Spots avulsos */
+    .spots-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 64px;
     }
-    .cota-card .cota-btn.secondary {
-      background: transparent;
-      color: var(--white);
-      border: 1px solid var(--white-30);
+    .spot-card {
+      background: var(--bg);
+      border: 1px solid var(--hairline);
+      padding: 36px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .cota-card .cota-btn:hover { transform: scale(1.03); box-shadow: 0 8px 30px rgba(0,200,83,0.3); }
+    .spot-card .spot-meta { }
+    .spot-card .spot-meta .eyebrow { margin-bottom: 8px; }
+    .spot-card .spot-meta h4 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; font-weight: 500; color: var(--ink); }
+    .spot-card .spot-meta p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+    .spot-card .spot-price { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 30px; color: var(--accent); font-weight: 500; text-align: right; }
+    .spot-card .spot-price small { display: block; font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; font-family: 'Inter', sans-serif; }
 
     /* Crossmedia */
     .crossmedia-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
+      gap: 0;
+      border-top: 1px solid var(--hairline);
+      border-bottom: 1px solid var(--hairline);
     }
     .cross-card {
-      background: linear-gradient(135deg, var(--black-3), var(--black-4));
-      border: 1px solid var(--white-10);
-      border-radius: 16px;
-      padding: 28px;
-      text-align: center;
-      transition: all 0.4s;
+      padding: 40px 28px;
+      text-align: left;
+      border-right: 1px solid var(--hairline);
     }
-    .cross-card:hover { border-color: var(--green-1); transform: translateY(-4px); }
-    .cross-card .cross-icon { font-size: 32px; margin-bottom: 12px; }
-    .cross-card h4 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
-    .cross-card p { font-size: 13px; color: var(--white-50); }
-    .cross-card .cross-value { font-size: 18px; font-weight: 700; color: var(--green-2); margin-top: 8px; }
-
-    /* ===== FINANCEIRO ===== */
-    .financeiro { background: linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 100%); }
-    .fin-highlight {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-bottom: 80px;
-    }
-    .fin-card {
-      text-align: center;
-      padding: 48px 32px;
-      background: linear-gradient(135deg, var(--black-3), var(--black-4));
-      border: 1px solid var(--white-10);
-      border-radius: 24px;
-      transition: all 0.4s;
-    }
-    .fin-card:hover { border-color: var(--green-1); }
-    .fin-card .fin-value {
-      font-size: 48px;
-      font-weight: 800;
-      letter-spacing: -2px;
-      margin-bottom: 4px;
-    }
-    .fin-card .fin-label { font-size: 14px; color: var(--white-50); margin-bottom: 16px; }
-    .fin-card .fin-bar {
-      height: 4px;
-      background: var(--white-10);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .fin-card .fin-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--green-1), var(--green-2));
-      border-radius: 2px;
-      transition: width 1.5s ease;
-    }
-
-    /* Cenarios */
-    .cenarios-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-      margin-bottom: 60px;
-    }
-    .cenario-card {
-      background: linear-gradient(135deg, var(--black-3), var(--black-4));
-      border: 1px solid var(--white-10);
-      border-radius: 20px;
-      padding: 40px;
-      transition: all 0.4s;
-    }
-    .cenario-card:hover { border-color: var(--green-1); }
-    .cenario-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 24px; }
-    .cenario-card .cenario-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--white-10);
-      font-size: 14px;
-    }
-    .cenario-card .cenario-row .label { color: var(--white-50); }
-    .cenario-card .cenario-row .value { font-weight: 600; }
-    .cenario-card .cenario-row.highlight .value { color: var(--green-2); font-size: 18px; }
-
-    /* ROI */
-    .roi-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-    }
-    .roi-card {
-      text-align: center;
-      padding: 32px 20px;
-      background: linear-gradient(135deg, var(--black-3), var(--black-4));
-      border: 1px solid var(--white-10);
-      border-radius: 16px;
-    }
-    .roi-card .roi-value { font-size: 32px; font-weight: 800; margin-bottom: 4px; }
-    .roi-card .roi-label { font-size: 12px; color: var(--white-50); }
+    .cross-card:last-child { border-right: none; }
+    .cross-card .eyebrow { margin-bottom: 12px; }
+    .cross-card h4 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; font-weight: 500; color: var(--ink); margin-bottom: 8px; }
+    .cross-card p { font-size: 13px; color: var(--ink-60); line-height: 1.6; }
 
     /* ===== DIFERENCIAIS ===== */
-    .diferenciais {
-      background: linear-gradient(180deg, var(--black-1) 0%, var(--black-2) 100%);
-      position: relative;
-    }
-    .diferenciais::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: url('https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=1920&q=80') center/cover no-repeat;
-      opacity: 0.06;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .diferenciais > * { position: relative; z-index: 1; }
     .diff-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
+      gap: 1px;
+      background: var(--hairline);
+      border: 1px solid var(--hairline);
     }
-    .diff-card {
-      background: linear-gradient(135deg, var(--black-3), var(--black-4));
-      border: 1px solid var(--white-10);
-      border-radius: 24px;
-      padding: 48px;
-      transition: all 0.5s;
-      position: relative;
-      overflow: hidden;
-    }
-    .diff-card:hover { border-color: var(--green-1); transform: translateY(-4px); }
-    .diff-card .diff-number {
-      font-size: 72px;
-      font-weight: 900;
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      background: linear-gradient(135deg, rgba(0,200,83,0.1), transparent);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .diff-card { background: var(--bg); padding: 56px 48px; position: relative; }
+    .diff-card .diff-num {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 64px;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--accent);
       line-height: 1;
+      margin-bottom: 24px;
+      opacity: 0.6;
     }
-    .diff-card h3 { font-size: 22px; font-weight: 700; margin-bottom: 12px; position: relative; }
-    .diff-card p { color: var(--white-50); font-size: 14px; line-height: 1.7; position: relative; }
-    .diff-card .diff-impact {
-      margin-top: 20px;
-      padding: 16px;
-      background: rgba(0,200,83,0.05);
-      border: 1px solid rgba(0,200,83,0.15);
-      border-radius: 12px;
-      font-size: 13px;
-      color: var(--green-3);
-      position: relative;
-    }
+    .diff-card h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 28px; font-weight: 500; margin-bottom: 14px; color: var(--ink); }
+    .diff-card p { color: var(--ink-80); font-size: 15px; line-height: 1.75; margin-bottom: 20px; }
+    .diff-card .impact { font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-size: 16px; color: var(--accent-dim); padding-top: 20px; border-top: 1px solid var(--hairline); }
 
     /* ===== ROADMAP ===== */
-    .roadmap { background: linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 100%); }
     .roadmap-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--hairline);
+      border-bottom: 1px solid var(--hairline);
     }
-    .roadmap-card {
-      background: linear-gradient(135deg, var(--black-3), var(--black-4));
-      border: 1px solid var(--white-10);
-      border-radius: 20px;
-      padding: 36px 28px;
-      transition: all 0.4s;
+    .roadmap-step {
+      padding: 48px 24px;
+      border-right: 1px solid var(--hairline);
       position: relative;
     }
-    .roadmap-card:hover { border-color: var(--green-1); }
-    .roadmap-card .phase-tag {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--green-1), var(--green-2));
-      color: var(--black-1);
-      padding: 4px 14px;
-      border-radius: 50px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin-bottom: 16px;
-    }
-    .roadmap-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-    .roadmap-card .phase-period { font-size: 13px; color: var(--green-3); margin-bottom: 20px; }
-    .roadmap-card ul { list-style: none; }
-    .roadmap-card ul li {
+    .roadmap-step:last-child { border-right: none; }
+    .roadmap-step.estreia { background: var(--dark); color: var(--cream); }
+    .roadmap-step .phase { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+    .roadmap-step.estreia .phase { color: var(--accent); }
+    .roadmap-step h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 24px; font-weight: 500; color: var(--ink); margin-bottom: 8px; }
+    .roadmap-step.estreia h3 { color: var(--cream); }
+    .roadmap-step .period { font-size: 12px; color: var(--muted); letter-spacing: 1px; margin-bottom: 20px; }
+    .roadmap-step.estreia .period { color: rgba(239,233,221,0.6); }
+    .roadmap-step ul { list-style: none; }
+    .roadmap-step ul li {
       font-size: 13px;
-      color: var(--white-50);
+      color: var(--ink-60);
       padding: 6px 0;
-      padding-left: 16px;
+      padding-left: 14px;
       position: relative;
+      line-height: 1.5;
     }
-    .roadmap-card ul li::before {
+    .roadmap-step.estreia ul li { color: rgba(239,233,221,0.75); }
+    .roadmap-step ul li::before {
       content: '';
       position: absolute;
-      left: 0;
-      top: 13px;
-      width: 6px; height: 6px;
-      background: var(--green-2);
-      border-radius: 50%;
-    }
-    .roadmap-card .invest {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid var(--white-10);
-      font-size: 14px;
-      font-weight: 600;
+      left: 0; top: 13px;
+      width: 4px; height: 1px;
+      background: var(--accent);
     }
 
     /* ===== METRICAS ===== */
-    .metricas { background: linear-gradient(180deg, var(--black-1) 0%, var(--black-2) 100%); }
     .metricas-table-wrap {
-      background: linear-gradient(135deg, var(--black-3), var(--black-4));
-      border: 1px solid var(--white-10);
-      border-radius: 24px;
-      overflow: hidden;
-      margin-bottom: 40px;
+      background: var(--bg);
+      border: 1px solid var(--hairline);
+      margin-bottom: 24px;
     }
     .metricas-table-title {
-      padding: 24px 32px;
-      font-size: 18px;
-      font-weight: 700;
-      border-bottom: 1px solid var(--white-10);
+      padding: 28px 36px;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      border-bottom: 1px solid var(--hairline);
+      font-weight: 500;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+    table { width: 100%; border-collapse: collapse; }
     table th {
       text-align: left;
-      padding: 16px 24px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--green-2);
-      letter-spacing: 1px;
+      padding: 18px 28px;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 2px;
       text-transform: uppercase;
-      border-bottom: 1px solid var(--white-10);
+      border-bottom: 1px solid var(--hairline);
     }
     table td {
-      padding: 16px 24px;
+      padding: 18px 28px;
       font-size: 14px;
-      color: var(--white-70);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: var(--ink-80);
+      border-bottom: 1px solid var(--hairline);
+      font-weight: 300;
     }
-    table tr:hover td { background: rgba(0,200,83,0.03); }
+    table tr:last-child td { border-bottom: none; }
+    table tr td:first-child { font-weight: 400; color: var(--ink); }
 
     /* ===== CTA FINAL ===== */
     .cta-final {
-      padding: 160px 0;
+      padding: 180px 0;
       text-align: center;
-      background: radial-gradient(ellipse at 50% 50%, rgba(0,200,83,0.1) 0%, transparent 60%),
-                  linear-gradient(180deg, var(--black-2) 0%, var(--black-1) 100%);
+      background: var(--dark);
+      color: var(--cream);
     }
+    .cta-final .eyebrow { color: var(--accent); }
     .cta-final h2 {
-      font-size: clamp(36px, 5vw, 60px);
-      font-weight: 800;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(40px, 6vw, 64px);
+      font-weight: 400;
       line-height: 1.1;
-      letter-spacing: -1.5px;
-      margin-bottom: 20px;
+      letter-spacing: -0.5px;
+      margin-bottom: 28px;
+      max-width: 720px;
+      margin-left: auto; margin-right: auto;
     }
-    .cta-final p {
-      font-size: 18px;
-      color: var(--white-70);
-      max-width: 550px;
-      margin: 0 auto 48px;
-      font-weight: 300;
-    }
-    .cta-final .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-    .contact-row {
-      display: flex;
-      justify-content: center;
-      gap: 48px;
-      margin-top: 60px;
-      flex-wrap: wrap;
-    }
+    .cta-final h2 em { font-style: italic; color: var(--accent); }
+    .cta-final p { font-size: 17px; color: rgba(239,233,221,0.75); max-width: 540px; margin: 0 auto 56px; font-weight: 300; line-height: 1.7; }
+    .cta-final .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 80px; }
+    .cta-final .btn-primary { background: var(--accent); color: var(--dark); border-color: var(--accent); }
+    .cta-final .btn-primary:hover { background: transparent; color: var(--accent); }
+    .cta-final .btn-secondary { color: var(--cream); border-color: rgba(239,233,221,0.4); }
+    .cta-final .btn-secondary:hover { background: var(--cream); color: var(--dark); border-color: var(--cream); }
+    .contact-row { display: flex; justify-content: center; gap: 64px; flex-wrap: wrap; padding-top: 56px; border-top: 1px solid rgba(184,149,106,0.25); max-width: 880px; margin: 0 auto; }
     .contact-item { text-align: center; }
-    .contact-item .contact-label { font-size: 12px; color: var(--white-50); margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
-    .contact-item .contact-value { font-size: 16px; font-weight: 600; color: var(--green-2); }
-    .contact-item a { color: var(--green-2); text-decoration: none; }
+    .contact-item .contact-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: rgba(239,233,221,0.5); margin-bottom: 8px; }
+    .contact-item .contact-value { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 18px; color: var(--cream); }
+    .contact-item a { color: var(--cream); text-decoration: none; transition: color 0.3s; }
+    .contact-item a:hover { color: var(--accent); }
 
     /* ===== FOOTER ===== */
     footer {
-      padding: 40px 0;
-      border-top: 1px solid var(--white-10);
+      padding: 64px 0;
+      border-top: 1px solid rgba(184,149,106,0.25);
+      background: var(--dark);
+      color: rgba(239,233,221,0.55);
       text-align: center;
     }
-    footer p { font-size: 13px; color: var(--white-30); }
-    footer .footer-logo { margin-bottom: 16px; }
-    footer .footer-logo svg { height: 30px; opacity: 0.5; }
+    .footer-marks {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 80px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .footer-mark { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .footer-mark .footer-mark-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: rgba(239,233,221,0.4); }
+    .footer-mark img { display: block; opacity: 0.95; }
+    .footer-mark-band img { height: 70px; }
+    .footer-mark-foco img { height: 80px; }
+    footer p { font-size: 12px; letter-spacing: 1px; margin-top: 16px; }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1024px) {
-      .conceito-grid, .cotas-grid, .diff-grid, .cenarios-grid { grid-template-columns: 1fr; }
-      .formato-specs, .crossmedia-grid, .roadmap-grid, .roi-grid { grid-template-columns: repeat(2, 1fr); }
-      .cota-card.featured { transform: none; }
-      .cota-card.featured:hover { transform: translateY(-8px); }
+      .conceito-grid, .cotas-grid, .diff-grid, .spots-wrap { grid-template-columns: 1fr; }
+      .formato-specs, .crossmedia-grid { grid-template-columns: repeat(2, 1fr); }
+      .formato-specs .spec-card:nth-child(2) { border-right: none; }
+      .crossmedia-grid .cross-card:nth-child(2) { border-right: none; }
+      .roadmap-grid { grid-template-columns: 1fr; }
+      .roadmap-step { border-right: none; border-bottom: 1px solid var(--hairline); }
+      .roadmap-step:last-child { border-bottom: none; }
     }
     @media (max-width: 768px) {
       .container { padding: 0 24px; }
-      section { padding: 80px 0; }
+      section { padding: 96px 0; }
       .nav-links { display: none; }
       .menu-toggle { display: block; }
-      .formato-specs, .crossmedia-grid, .quadros-grid, .roi-grid { grid-template-columns: 1fr; }
-      .fin-highlight { grid-template-columns: 1fr; }
-      .roadmap-grid { grid-template-columns: 1fr; }
-      .diff-card .diff-number { font-size: 48px; }
-      .hero h1 { letter-spacing: -1px; }
-      .contact-row { gap: 24px; }
+      .formato-specs, .quadros-grid { grid-template-columns: 1fr; }
+      .formato-specs .spec-card { border-right: none; border-bottom: 1px solid var(--hairline); }
+      .formato-specs .spec-card:last-child { border-bottom: none; }
+      .quadros-grid { gap: 1px; }
+      .crossmedia-grid { grid-template-columns: 1fr; }
+      .crossmedia-grid .cross-card { border-right: none; border-bottom: 1px solid var(--hairline); }
+      .crossmedia-grid .cross-card:last-child { border-bottom: none; }
+      .hero-logo img { height: 130px; }
+      .hero-meta { gap: 28px; }
+      .spot-card { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .spot-card .spot-price { text-align: left; }
+      .bloco-row { flex-wrap: wrap; gap: 12px; }
+      .bloco-row .step { min-width: 0; }
+      .footer-marks { gap: 32px; }
     }
   </style>
 </head>
@@ -955,19 +699,14 @@
 <nav id="navbar">
   <div class="container">
     <a href="#" class="nav-logo">
-      <svg viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M2 20 Q8 20 14 20 Q18 20 22 18 Q26 16 28 12 Q30 8 32 6 L36 20 Q38 28 40 32 Q42 36 44 34 Q46 30 48 20 Q50 10 52 8 Q54 6 56 12 Q58 18 60 20 Q64 22 70 20 Q76 20 82 20" stroke="url(#logoGrad)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="84" cy="20" r="2.5" fill="#00E676" opacity="0.8"/>
-        <defs><linearGradient id="logoGrad" x1="2" y1="20" x2="84" y2="20"><stop stop-color="#00C853"/><stop offset="0.5" stop-color="#00E676"/><stop offset="1" stop-color="#69F0AE"/></linearGradient></defs>
-      </svg>
-      <span>Saúde em Foco Minas</span>
+      <span class="nav-mark"><img src="assets/logo-foco.png" alt="Foco em Saúde Minas"></span>
+      <span class="nav-word">Foco em Saúde Minas</span>
     </a>
     <ul class="nav-links">
       <li><a href="#conceito">Conceito</a></li>
       <li><a href="#formato">Formato</a></li>
-      <li><a href="#negocio">Negócio</a></li>
-      <li><a href="#diferenciais">Roadmap</a></li>
-      <li><a href="#diferenciais">Diferenciais</a></li>
+      <li><a href="#negocio">Cotas</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
       <li><a href="#contato" class="nav-cta">Fale Conosco</a></li>
     </ul>
     <button class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('mobile-open')">
@@ -981,472 +720,467 @@
   <div class="hero-content">
     <div class="hero-badge">
       <span class="dot"></span>
-      Proposta Executiva 2026
+      Estreia · 2 de agosto de 2026 · Band Minas
     </div>
     <div class="hero-logo">
-      <svg viewBox="0 0 300 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M5 40 Q15 40 25 40 Q35 40 42 38 Q48 36 52 30 Q56 24 58 18 Q60 12 62 10 L68 40 Q72 54 76 62 Q78 66 80 64 Q84 58 88 40 Q92 22 96 16 Q98 12 100 18 Q104 30 108 38 Q112 42 120 40 Q130 38 140 40 Q150 40 160 40" stroke="url(#heroGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="165" cy="40" r="3.5" fill="#00E676" opacity="0.9"/>
-        <circle cx="165" cy="40" r="7" fill="none" stroke="#00E676" stroke-width="0.5" opacity="0.4"/>
-        <defs><linearGradient id="heroGrad" x1="5" y1="40" x2="165" y2="40"><stop stop-color="#00C853"/><stop offset="0.4" stop-color="#00E676"/><stop offset="1" stop-color="#69F0AE"/></linearGradient></defs>
-      </svg>
+      <img src="assets/logo-foco.png" alt="Foco em Saúde Minas">
     </div>
-    <h1>Saúde em <span class="text-gradient">Foco</span> Minas</h1>
-    <p>A plataforma de comunicação em saúde mais completa de Minas Gerais. Conteúdo, autoridade e receita em um ecossistema integrado.</p>
+    <h1>A nova referência<br>em saúde de <em>Minas Gerais</em></h1>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <div class="label">Estreia</div>
+        <div class="value">02 · ago · 2026</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="label">Domingos</div>
+        <div class="value">7h30 às 8h</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="label">Canal</div>
+        <div class="value">Band Minas</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="label">Primeira temporada</div>
+        <div class="value">26 episódios</div>
+      </div>
+    </div>
+    <p>Conteúdo educativo, autoridade médica e oportunidade comercial reunidos em um programa semanal de 30 minutos com cobertura estadual.</p>
     <div class="hero-buttons">
-      <a href="#negocio" class="btn-primary">Ver Proposta Comercial</a>
-      <a href="#conceito" class="btn-secondary">Saiba Mais</a>
+      <a href="#negocio" class="btn-primary">Ver Cotas</a>
+      <a href="#conceito" class="btn-secondary">Conheça o Projeto</a>
     </div>
-  </div>
-  <div class="scroll-indicator">
-    <span>Scroll</span>
-    <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
   </div>
 </section>
-
-<div class="section-divider"></div>
 
 <!-- CONCEITO -->
-<section class="conceito" id="conceito">
+<section id="conceito" class="alt">
   <div class="container">
-    <div class="section-header animate-on-scroll">
-      <div class="section-label">Conceito</div>
-      <h2 class="section-title">Não é só um programa.<br><span class="text-gradient">É um ecossistema.</span></h2>
-      <p class="section-subtitle">TV aberta, conteúdo de qualidade e oportunidade comercial reunidos em uma única plataforma.</p>
+    <div class="section-header center reveal">
+      <div class="eyebrow">Conceito</div>
+      <h2 class="section-title">Não é um programa.<br>É um <em>ecossistema</em>.</h2>
+      <p class="section-sub">TV aberta, conteúdo de qualidade e oportunidade comercial reunidos em uma única plataforma de comunicação em saúde.</p>
     </div>
     <div class="conceito-grid">
-      <div class="conceito-text animate-on-scroll">
-        <h3>A referência em saúde, tecnologia e bem-estar de Minas Gerais</h3>
-        <p>O Saúde em Foco Minas combina conteúdo educativo de qualidade com um modelo comercial escalável. Um programa semanal de 30 minutos na Band Minas Gerais que funciona como canal educativo, vitrine de autoridade e máquina geradora de receita, tudo ao mesmo tempo.</p>
+      <div class="conceito-text reveal">
+        <h3>A referência em saúde, tecnologia e bem-estar de Minas Gerais.</h3>
+        <p>Foco em Saúde Minas é um programa semanal de 30 minutos na Band Minas que combina jornalismo de saúde, ciência e tecnologia médica com um modelo comercial escalável. Funciona como canal educativo, vitrine de autoridade e plataforma de receita — simultaneamente.</p>
         <br>
-        <p>Com alcance de 100% do estado, o programa atinge famílias, profissionais de saúde e decisores que buscam informação confiável e oportunidades de se posicionar como referência no mercado.</p>
+        <p>Com cobertura estadual via Band Minas (Belo Horizonte e região metropolitana) e Band Triângulo (Uberaba e Triângulo Mineiro), o programa atinge famílias, profissionais de saúde e decisores que buscam informação confiável.</p>
       </div>
-      <div class="conceito-cards">
-        <div class="conceito-card animate-on-scroll">
-          <div class="icon">
-            <svg viewBox="0 0 24 24" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </div>
-          <h4>Público Qualificado</h4>
-          <p>200 a 500 mil telespectadores por edição. Classes A, B e C de todo o estado de Minas Gerais.</p>
+      <div class="conceito-cards reveal">
+        <div class="conceito-card">
+          <div class="num">i.</div>
+          <h4>Público qualificado</h4>
+          <p>Classes A, B e C de Minas Gerais. Famílias, profissionais de saúde e tomadores de decisão clínica.</p>
         </div>
-        <div class="conceito-card animate-on-scroll">
-          <div class="icon">
-            <svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <h4>Autoridade Imediata</h4>
-          <p>TV aberta confere um selo de confiança que plataformas digitais não conseguem replicar.</p>
+        <div class="conceito-card">
+          <div class="num">ii.</div>
+          <h4>Autoridade imediata</h4>
+          <p>TV aberta confere selo de confiança que plataformas digitais não replicam.</p>
         </div>
-        <div class="conceito-card animate-on-scroll">
-          <div class="icon">
-            <svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          </div>
-          <h4>Múltiplas Receitas</h4>
-          <p>Patrocínio Master, cotas de apoio, participações de clínicas, YouTube, redes sociais e eventos.</p>
+        <div class="conceito-card">
+          <div class="num">iii.</div>
+          <h4>Múltiplas receitas</h4>
+          <p>Patrocínio Master, cotas Premium e Apoio, quadros patrocinados, spots avulsos, crossmedia digital.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="section-divider"></div>
-
 <!-- FORMATO -->
-<section class="formato" id="formato">
+<section id="formato">
   <div class="container">
-    <div class="section-header center animate-on-scroll">
-      <div class="section-label">Formato</div>
-      <h2 class="section-title">30 minutos que <span class="text-gradient">transformam.</span></h2>
-      <p class="section-subtitle">Programa semanal com estrutura pensada para máximo engajamento e oportunidade comercial.</p>
+    <div class="section-header center reveal">
+      <div class="eyebrow">Formato</div>
+      <h2 class="section-title">Trinta minutos<br>que <em>transformam</em>.</h2>
+      <p class="section-sub">Programa semanal estruturado para máximo engajamento editorial e oportunidade comercial.</p>
     </div>
 
-    <div class="formato-specs animate-on-scroll">
+    <div class="formato-specs reveal">
       <div class="spec-card">
-        <div class="number text-gradient">30</div>
+        <div class="number">30<em>'</em></div>
         <div class="label">Minutos por episódio</div>
       </div>
       <div class="spec-card">
-        <div class="number text-gradient">52</div>
-        <div class="label">Episódios por ano</div>
+        <div class="number">26</div>
+        <div class="label">Episódios · 6 meses</div>
       </div>
       <div class="spec-card">
-        <div class="number text-gradient">500k</div>
-        <div class="label">Telespectadores</div>
+        <div class="number">3<em>+2</em></div>
+        <div class="label">Blocos + Breaks</div>
       </div>
       <div class="spec-card">
-        <div class="number text-gradient">100%</div>
-        <div class="label">Cobertura em MG</div>
+        <div class="number">Dom</div>
+        <div class="label">7h30 às 8h00</div>
       </div>
     </div>
 
-    <div class="section-header animate-on-scroll">
-      <div class="section-label">Estrutura</div>
-      <h2 class="section-title" style="font-size:36px;">Blocos do Programa</h2>
-    </div>
-
-    <div class="blocos-timeline">
-      <div class="bloco-item animate-on-scroll">
-        <span class="bloco-tag">BLOCO 1</span>
-        <h4>Abertura e Tema Principal</h4>
-        <p>Abertura impactante, tema da semana com informação relevante e entrevista com especialista renomado.</p>
-        <div class="duration">10 minutos de conteúdo</div>
+    <div class="blocos-wrap reveal">
+      <div class="blocos-intro">
+        <div class="eyebrow">Estrutura</div>
+        <h3>Blocos do programa</h3>
       </div>
-      <div class="bloco-item animate-on-scroll">
-        <span class="bloco-tag">INTERVALO</span>
-        <h4>Break Comercial</h4>
-        <p>Publicidade direta e chamadas institucionais dos patrocinadores.</p>
-        <div class="duration">3 minutos</div>
+      <div class="blocos-line">
+        <div class="bloco-row">
+          <span class="step">Abertura</span>
+          <span class="title">Vinheta e teaser editorial</span>
+          <span class="dur">30 seg</span>
+        </div>
+        <div class="bloco-row">
+          <span class="step">Bloco 1</span>
+          <span class="title">Tema principal · entrevista</span>
+          <span class="dur">7 min</span>
+        </div>
+        <div class="bloco-row">
+          <span class="step break-step">Intervalo</span>
+          <span class="title break-title">Break comercial</span>
+          <span class="dur">3 min</span>
+        </div>
+        <div class="bloco-row">
+          <span class="step">Bloco 2</span>
+          <span class="title">Quadros editoriais</span>
+          <span class="dur">7 min</span>
+        </div>
+        <div class="bloco-row">
+          <span class="step break-step">Intervalo</span>
+          <span class="title break-title">Break comercial e merchandising</span>
+          <span class="dur">3 min</span>
+        </div>
+        <div class="bloco-row">
+          <span class="step">Bloco 3</span>
+          <span class="title">Tecnologia, ciência e bem-estar</span>
+          <span class="dur">7 min</span>
+        </div>
+        <div class="bloco-row">
+          <span class="step">Encerramento</span>
+          <span class="title">Vinheta e chamada da próxima edição</span>
+          <span class="dur">30 seg</span>
+        </div>
       </div>
-      <div class="bloco-item animate-on-scroll">
-        <span class="bloco-tag">BLOCO 2</span>
-        <h4>Mitos e Verdades + Caso Real</h4>
-        <p>Quadro educativo desmistificando informações de saúde e história real de superação de paciente.</p>
-        <div class="duration">7 minutos de conteúdo</div>
-      </div>
-      <div class="bloco-item animate-on-scroll">
-        <span class="bloco-tag">INTERVALO</span>
-        <h4>Break Comercial + Merchandising</h4>
-        <p>Publicidade e ações de merchandising integradas ao conteúdo.</p>
-        <div class="duration">3 minutos</div>
-      </div>
-      <div class="bloco-item animate-on-scroll">
-        <span class="bloco-tag">BLOCO 3</span>
-        <h4>Tecnologia e Dica Prática</h4>
-        <p>Inovações em saúde, novos equipamentos e tratamentos de ponta. Finaliza com dica de prevenção ou bem-estar.</p>
-        <div class="duration">7 minutos de conteúdo</div>
-      </div>
+      <div class="blocos-total">Total: 30 minutos no ar · Dom 7h30 às 8h</div>
     </div>
   </div>
 </section>
-
-<div class="section-divider"></div>
 
 <!-- QUADROS -->
-<section class="quadros">
+<section class="alt">
   <div class="container">
-    <div class="section-header center animate-on-scroll">
-      <div class="section-label">Quadros Fixos</div>
-      <h2 class="section-title">Conteúdo que <span class="text-gradient">engaja.</span></h2>
-      <p class="section-subtitle">Quatro quadros semanais que educam o público e criam oportunidades para parceiros.</p>
+    <div class="section-header center reveal">
+      <div class="eyebrow">Quadros fixos</div>
+      <h2 class="section-title">Conteúdo que <em>engaja</em>.</h2>
+      <p class="section-sub">Quatro quadros recorrentes que educam, fidelizam audiência e abrem janelas comerciais consistentes.</p>
     </div>
-
-    <div class="quadros-grid">
-      <div class="quadro-card animate-on-scroll">
-        <div class="quadro-icon">
-          <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        </div>
+    <div class="quadros-grid reveal">
+      <div class="quadro-card">
+        <div class="num">i.</div>
         <h3>Saúde sem Mistério</h3>
-        <p>Traduz termos médicos complexos para linguagem que todo mundo entende. Especialistas se posicionam como educadores confiáveis.</p>
-        <div class="quadro-meta">
-          <span>4 minutos</span>
-          <span>Toda semana</span>
-          <span>Público geral</span>
-        </div>
+        <p>Traduz termos médicos complexos em linguagem acessível. Posiciona especialistas como educadores confiáveis.</p>
       </div>
-
-      <div class="quadro-card animate-on-scroll">
-        <div class="quadro-icon">
-          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        </div>
+      <div class="quadro-card">
+        <div class="num">ii.</div>
         <h3>Alerta Médico</h3>
-        <p>Foco em prevenção, check-ups sazonais e campanhas de saúde pública. Hospitais e centros de diagnóstico como protagonistas.</p>
-        <div class="quadro-meta">
-          <span>3-4 minutos</span>
-          <span>Toda semana</span>
-          <span>Famílias</span>
-        </div>
+        <p>Prevenção, check-ups sazonais e campanhas de saúde pública. Vitrine para hospitais e centros de diagnóstico.</p>
       </div>
-
-      <div class="quadro-card animate-on-scroll">
-        <div class="quadro-icon">
-          <svg viewBox="0 0 24 24" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
-        </div>
+      <div class="quadro-card">
+        <div class="num">iii.</div>
         <h3>Tecnologia que Salva</h3>
-        <p>Vitrine para novos equipamentos, cirurgia robótica e IA no diagnóstico. Ideal para fabricantes e clínicas com tecnologia de ponta.</p>
-        <div class="quadro-meta">
-          <span>4 minutos</span>
-          <span>Toda semana</span>
-          <span>Inovação</span>
-        </div>
+        <p>Novos equipamentos, cirurgia robótica e IA no diagnóstico. Vitrine para fabricantes e clínicas de ponta.</p>
       </div>
-
-      <div class="quadro-card animate-on-scroll">
-        <div class="quadro-icon">
-          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </div>
+      <div class="quadro-card">
+        <div class="num">iv.</div>
         <h3>Histórias que Inspiram</h3>
-        <p>Depoimentos reais de superação e sucesso no tratamento. Apelo emocional que valida o trabalho médico e institucional.</p>
-        <div class="quadro-meta">
-          <span>3 minutos</span>
-          <span>Toda semana</span>
-          <span>Emocional</span>
-        </div>
+        <p>Depoimentos reais de superação. Apelo emocional que valida o trabalho médico e institucional.</p>
       </div>
     </div>
   </div>
 </section>
 
-<div class="section-divider"></div>
-
-<!-- MODELO DE NEGÓCIO -->
-<section class="negocio" id="negocio">
+<!-- NEGOCIO -->
+<section id="negocio">
   <div class="container">
-    <div class="section-header center animate-on-scroll">
-      <div class="section-label">Modelo de Negócio</div>
-      <h2 class="section-title">Múltiplas portas de <span class="text-gradient">receita.</span></h2>
-      <p class="section-subtitle">Diversificação que garante sustentabilidade e escalabilidade.</p>
+    <div class="section-header center reveal">
+      <div class="eyebrow">Modelo Comercial</div>
+      <h2 class="section-title">Múltiplas portas<br>de <em>receita</em>.</h2>
+      <p class="section-sub">Cotas semestrais (26 episódios), spots avulsos e expansão crossmedia. Diversificação que garante sustentabilidade.</p>
     </div>
 
-    <div class="cotas-grid">
+    <div class="cotas-grid reveal">
       <!-- Master -->
-      <div class="cota-card animate-on-scroll">
-        <div class="cota-tier">Exclusivo</div>
+      <div class="cota-card featured">
+        <div class="cota-tier">Cota Master</div>
         <h3>Master</h3>
-        <div class="price"><strong>Sob consulta</strong></div>
+        <div class="cota-slots">1 cota · exclusividade por segmento</div>
+        <div class="price-figure">R$ 60.000<small>/mês</small></div>
+        <div class="price-period">Compromisso semestral</div>
+        <div class="price-semestre">R$ 360.000 / 26 episódios</div>
         <ul>
           <li>Exclusividade total por segmento</li>
-          <li>Presença em todos os 52 episódios</li>
           <li>Vinheta de abertura e encerramento</li>
-          <li>Inserção editorial no Bloco 1</li>
-          <li>Logo em todos os materiais</li>
-          <li>Menção do apresentador por episódio</li>
+          <li>Presença em todos os 26 episódios</li>
+          <li>Inserção editorial no Bloco 1 (entrevista com porta-voz)</li>
+          <li>1 break 60" por programa</li>
+          <li>Menção do apresentador</li>
+          <li>Logo em todos os materiais e crossmedia</li>
         </ul>
-        <a href="#contato" class="cota-btn secondary">Solicitar Proposta</a>
+        <a href="#contato" class="cota-btn">Solicitar Proposta</a>
       </div>
 
-      <!-- Apoio (Featured) -->
-      <div class="cota-card featured animate-on-scroll">
-        <div class="cota-tier">3 Cotas</div>
+      <!-- Premium -->
+      <div class="cota-card">
+        <div class="cota-tier">Cota Premium</div>
+        <h3>Premium</h3>
+        <div class="cota-slots">2 cotas disponíveis</div>
+        <div class="price-figure">R$ 30.000<small>/mês</small></div>
+        <div class="price-period">Compromisso semestral</div>
+        <div class="price-semestre">R$ 180.000 / 26 episódios</div>
+        <ul>
+          <li>Vinheta de bloco</li>
+          <li>1 break 60" por programa</li>
+          <li>Menção do apresentador</li>
+          <li>Logo nos créditos</li>
+          <li>Presença nos materiais e crossmedia</li>
+        </ul>
+        <a href="#contato" class="cota-btn">Reservar Cota</a>
+      </div>
+
+      <!-- Apoio -->
+      <div class="cota-card">
+        <div class="cota-tier">Cota Apoio</div>
         <h3>Apoio</h3>
-        <div class="price"><strong>Sob consulta</strong></div>
+        <div class="cota-slots">4 cotas disponíveis</div>
+        <div class="price-figure">R$ 15.000<small>/mês</small></div>
+        <div class="price-period">Compromisso semestral</div>
+        <div class="price-semestre">R$ 90.000 / 26 episódios</div>
         <ul>
-          <li>Presença nos intervalos comerciais</li>
-          <li>6 minutos de espaço por semana</li>
-          <li>Alternância entre 3 patrocinadores</li>
-          <li>Logo nos créditos e materiais</li>
+          <li>1 break 30" por programa</li>
+          <li>Logo nos créditos</li>
           <li>Agradecimento do apresentador</li>
-          <li>Ideal para marcas de bem-estar</li>
+          <li>Ideal para marcas de bem-estar e wellness</li>
         </ul>
-        <a href="#contato" class="cota-btn primary">Quero Esta Cota</a>
-      </div>
-
-      <!-- Participação -->
-      <div class="cota-card animate-on-scroll">
-        <div class="cota-tier">4-6 por mês</div>
-        <h3>Participação</h3>
-        <div class="price"><strong>Sob consulta</strong></div>
-        <ul>
-          <li>Entrevista de 5 a 7 minutos</li>
-          <li>Exposição da infraestrutura</li>
-          <li>Apresentação de especialista</li>
-          <li>Case de sucesso no ar</li>
-          <li>Logo, telefone e website</li>
-          <li>Possibilidade de repetição mensal</li>
-        </ul>
-        <a href="#contato" class="cota-btn secondary">Agendar Participação</a>
+        <a href="#contato" class="cota-btn">Reservar Cota</a>
       </div>
     </div>
 
-    <!-- Crossmedia -->
-    <div class="section-header center animate-on-scroll" style="margin-top:40px;">
-      <div class="section-label">Expansão</div>
-      <h2 class="section-title" style="font-size:36px;">Crossmedia</h2>
+    <div class="section-header center reveal" style="margin-top: 24px; margin-bottom: 48px;">
+      <div class="eyebrow">Spots avulsos</div>
+      <h3 class="section-title" style="font-size: 36px;">Inserções por episódio</h3>
     </div>
-    <div class="crossmedia-grid animate-on-scroll">
+    <div class="spots-wrap reveal">
+      <div class="spot-card">
+        <div class="spot-meta">
+          <div class="eyebrow">Break 30 segundos</div>
+          <h4>Inserção comercial</h4>
+          <p>Material entregue finalizado, exibido no break interno do programa.</p>
+        </div>
+        <div class="spot-price">R$ 8.000<small>por inserção</small></div>
+      </div>
+      <div class="spot-card">
+        <div class="spot-meta">
+          <div class="eyebrow">Break 60 segundos</div>
+          <h4>Inserção comercial estendida</h4>
+          <p>Espaço de 1 minuto para mensagem institucional ou produto.</p>
+        </div>
+        <div class="spot-price">R$ 15.000<small>por inserção</small></div>
+      </div>
+    </div>
+
+    <div class="spots-wrap reveal" style="grid-template-columns: 1fr;">
+      <div class="spot-card">
+        <div class="spot-meta">
+          <div class="eyebrow">Quadro patrocinado</div>
+          <h4>Entrevista de 5 a 7 minutos</h4>
+          <p>Participação editorial: apresentação de especialista, exposição da infraestrutura, case de sucesso. Logo, telefone e website ao vivo.</p>
+        </div>
+        <div class="spot-price">R$ 12.000<small>por participação</small></div>
+      </div>
+    </div>
+
+    <div class="section-header center reveal" style="margin-top: 96px; margin-bottom: 48px;">
+      <div class="eyebrow">Expansão</div>
+      <h3 class="section-title" style="font-size: 36px;">Crossmedia</h3>
+    </div>
+    <div class="crossmedia-grid reveal">
       <div class="cross-card">
-        <div class="cross-icon">&#9654;</div>
+        <div class="eyebrow">i.</div>
         <h4>YouTube</h4>
-        <p>Episódios completos + cortes</p>
-        <div class="cross-value">AdSense + Sponsorships</div>
+        <p>Episódios completos e cortes editoriais. Monetização AdSense e patrocínios diretos.</p>
       </div>
       <div class="cross-card">
-        <div class="cross-icon">&#9733;</div>
+        <div class="eyebrow">ii.</div>
         <h4>Redes Sociais</h4>
-        <p>Shorts e dicas rápidas</p>
-        <div class="cross-value">Parcerias + Affiliate</div>
+        <p>Shorts, dicas rápidas e bastidores. Parcerias com marcas e programas de afiliados.</p>
       </div>
       <div class="cross-card">
-        <div class="cross-icon">&#9741;</div>
+        <div class="eyebrow">iii.</div>
         <h4>Portal</h4>
-        <p>Blog, artigos e webinars</p>
-        <div class="cross-value">Publicidade + Premium</div>
+        <p>Artigos, webinars e conteúdo aprofundado. Publicidade e área premium.</p>
       </div>
       <div class="cross-card">
-        <div class="cross-icon">&#9878;</div>
+        <div class="eyebrow">iv.</div>
         <h4>Eventos</h4>
-        <p>Seminários e workshops</p>
-        <div class="cross-value">Ingressos + Patrocínios</div>
+        <p>Seminários e workshops presenciais. Ingressos e patrocínios setoriais.</p>
       </div>
     </div>
   </div>
 </section>
-
-<div class="section-divider"></div>
 
 <!-- DIFERENCIAIS -->
-<section class="diferenciais" id="diferenciais">
+<section id="diferenciais" class="alt">
   <div class="container">
-    <div class="section-header center animate-on-scroll">
-      <div class="section-label">Diferenciais</div>
-      <h2 class="section-title">Por que este projeto <span class="text-gradient">é único.</span></h2>
+    <div class="section-header center reveal">
+      <div class="eyebrow">Diferenciais</div>
+      <h2 class="section-title">Por que este projeto<br>é <em>único</em>.</h2>
     </div>
-
-    <div class="diff-grid">
-      <div class="diff-card animate-on-scroll">
-        <span class="diff-number">01</span>
-        <h3>Acesso Direto aos Decisores</h3>
-        <p>Sábados de manhã é quando donos de clínicas e decisores de saúde assistem TV. Contato direto com quem decide.</p>
-        <div class="diff-impact">Nenhum outro canal em MG oferece acesso tão qualificado a este público.</div>
+    <div class="diff-grid reveal">
+      <div class="diff-card">
+        <div class="diff-num">i.</div>
+        <h3>Acesso direto aos decisores</h3>
+        <p>Domingo, 7h30. Janela em que famílias, profissionais e decisores do setor de saúde consomem TV de forma atenta. Contato qualificado, sem dispersão.</p>
+        <div class="impact">Nenhum outro canal em MG oferece acesso tão qualificado a este público.</div>
       </div>
-      <div class="diff-card animate-on-scroll">
-        <span class="diff-number">02</span>
-        <h3>Conteúdo + Comercial Integrados</h3>
-        <p>Integração natural de marcas ao conteúdo, sem cara de propaganda. Maior receptividade e menor resistência do público.</p>
-        <div class="diff-impact">Efetividade muito superior à publicidade tradicional.</div>
+      <div class="diff-card">
+        <div class="diff-num">ii.</div>
+        <h3>Conteúdo e comercial integrados</h3>
+        <p>Marcas integradas ao editorial, sem cara de propaganda. Maior receptividade e menor resistência do público.</p>
+        <div class="impact">Efetividade superior à publicidade tradicional.</div>
       </div>
-      <div class="diff-card animate-on-scroll">
-        <span class="diff-number">03</span>
-        <h3>TV Aberta = Credibilidade</h3>
-        <p>A TV aberta confere um selo de confiança que nenhuma plataforma digital consegue replicar. Autoridade instantânea.</p>
-        <div class="diff-impact">Clínicas que participam ganham credibilidade imediata junto ao público.</div>
+      <div class="diff-card">
+        <div class="diff-num">iii.</div>
+        <h3>TV aberta é credibilidade</h3>
+        <p>O selo de confiança da TV aberta é insubstituível. Clínicas e marcas que participam ganham autoridade instantânea junto ao público.</p>
+        <div class="impact">Credibilidade que plataforma digital nenhuma replica.</div>
       </div>
-      <div class="diff-card animate-on-scroll">
-        <span class="diff-number">04</span>
-        <h3>Modelo Escalável</h3>
-        <p>Múltiplas portas de entrada permitem que diferentes tipos de negócios encontrem oportunidades. Receita estável e previsível.</p>
-        <div class="diff-impact">Barreira de entrada alta: posição defensável por 3 a 5 anos.</div>
+      <div class="diff-card">
+        <div class="diff-num">iv.</div>
+        <h3>Modelo escalável</h3>
+        <p>Múltiplas portas de entrada para diferentes perfis de patrocinador. Receita previsível e barreira de entrada alta.</p>
+        <div class="impact">Posição defensável por 3 a 5 anos.</div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="section-divider"></div>
-
 <!-- ROADMAP -->
-<section class="roadmap">
+<section id="roadmap">
   <div class="container">
-    <div class="section-header center animate-on-scroll">
-      <div class="section-label">Roadmap</div>
-      <h2 class="section-title">O caminho até o <span class="text-gradient">lançamento.</span></h2>
+    <div class="section-header center reveal">
+      <div class="eyebrow">Roadmap</div>
+      <h2 class="section-title">O caminho até a <em>estreia</em>.</h2>
     </div>
-
-    <div class="roadmap-grid">
-      <div class="roadmap-card animate-on-scroll">
-        <span class="phase-tag">FASE 1</span>
+    <div class="roadmap-grid reveal">
+      <div class="roadmap-step">
+        <div class="phase">Fase 1</div>
         <h3>Estruturação</h3>
-        <div class="phase-period">Meses 1-2</div>
+        <div class="period">Mar – Jun · 2026</div>
         <ul>
-          <li>Contrato com Band Minas</li>
+          <li>Contrato Band Minas</li>
           <li>Definição do apresentador</li>
           <li>Pré-venda de cotas</li>
-          <li>Identidade visual</li>
-          <li>Website e mídia kit</li>
+          <li>Identidade e mídia kit</li>
         </ul>
-        <div class="invest"></div>
       </div>
-
-      <div class="roadmap-card animate-on-scroll">
-        <span class="phase-tag">FASE 2</span>
-        <h3>Produção</h3>
-        <div class="phase-period">Meses 3-4</div>
+      <div class="roadmap-step">
+        <div class="phase">Fase 2</div>
+        <h3>Pré-produção</h3>
+        <div class="period">Julho · 2026</div>
         <ul>
           <li>4 episódios piloto</li>
           <li>Testes de transmissão</li>
           <li>Treinamento da equipe</li>
-          <li>Venda de cotas de apoio</li>
           <li>Recrutamento de especialistas</li>
         </ul>
-        <div class="invest"></div>
       </div>
-
-      <div class="roadmap-card animate-on-scroll">
-        <span class="phase-tag">FASE 3</span>
-        <h3>Lançamento</h3>
-        <div class="phase-period">Mês 5</div>
+      <div class="roadmap-step estreia">
+        <div class="phase">Estreia</div>
+        <h3>02 · Ago · 2026</h3>
+        <div class="period">Domingo · 7h30 · Band Minas</div>
         <ul>
-          <li>Episódio 1 ao vivo</li>
-          <li>Campanha de marketing</li>
-          <li>Ativação de redes sociais</li>
-          <li>YouTube e Instagram</li>
+          <li>Episódio 1 ao ar</li>
+          <li>Campanha de lançamento</li>
+          <li>Ativação digital e PR</li>
+        </ul>
+      </div>
+      <div class="roadmap-step">
+        <div class="phase">Fase 3</div>
+        <h3>Consolidação</h3>
+        <div class="period">Ago – Dez · 2026</div>
+        <ul>
+          <li>26 episódios da 1ª temporada</li>
+          <li>Otimização editorial contínua</li>
+          <li>Expansão YouTube e portal</li>
           <li>Coleta de métricas</li>
         </ul>
-        <div class="invest"></div>
       </div>
-
-      <div class="roadmap-card animate-on-scroll">
-        <span class="phase-tag">FASE 4</span>
-        <h3>Escala</h3>
-        <div class="phase-period">Mês 6+</div>
+      <div class="roadmap-step">
+        <div class="phase">Fase 4</div>
+        <h3>Renovação</h3>
+        <div class="period">Jan · 2027 +</div>
         <ul>
-          <li>Otimização contínua</li>
-          <li>Expansão digital</li>
-          <li>Mais participações</li>
+          <li>2ª temporada (26 eps)</li>
+          <li>Renovação de cotas</li>
+          <li>Novos formatos e quadros</li>
           <li>Eventos presenciais</li>
-          <li>Novos formatos</li>
         </ul>
-        <div class="invest"></div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="section-divider"></div>
-
-<!-- MÉTRICAS -->
-<section class="metricas">
+<!-- METRICAS -->
+<section id="metricas" class="alt">
   <div class="container">
-    <div class="section-header center animate-on-scroll">
-      <div class="section-label">Métricas</div>
-      <h2 class="section-title">Como medimos o <span class="text-gradient">sucesso.</span></h2>
+    <div class="section-header center reveal">
+      <div class="eyebrow">Métricas</div>
+      <h2 class="section-title">Como medimos o <em>sucesso</em>.</h2>
     </div>
 
-    <div class="metricas-table-wrap animate-on-scroll">
-      <div class="metricas-table-title">KPIs de Audiência (TV)</div>
+    <div class="metricas-table-wrap reveal">
+      <div class="metricas-table-title">Audiência (TV)</div>
       <table>
-        <thead><tr><th>Métrica</th><th>Mês 1</th><th>Mês 6</th><th>Ano 1</th></tr></thead>
+        <thead><tr><th>Indicador</th><th>Mês 1</th><th>Mês 3</th><th>Mês 6</th></tr></thead>
         <tbody>
-          <tr><td>Audiência Média</td><td>150k</td><td>250k</td><td>350k</td></tr>
-          <tr><td>Share (%)</td><td>8%</td><td>12%</td><td>15%</td></tr>
-          <tr><td>Retenção (%)</td><td>70%</td><td>75%</td><td>80%</td></tr>
-          <tr><td>Satisfação</td><td>7.5/10</td><td>8.0/10</td><td>8.5/10</td></tr>
+          <tr><td>Audiência média</td><td>150k</td><td>250k</td><td>350k</td></tr>
+          <tr><td>Share na faixa</td><td>8%</td><td>12%</td><td>15%</td></tr>
+          <tr><td>Retenção</td><td>70%</td><td>75%</td><td>80%</td></tr>
+          <tr><td>Satisfação</td><td>7,5 / 10</td><td>8,0 / 10</td><td>8,5 / 10</td></tr>
         </tbody>
       </table>
     </div>
 
-    <div class="metricas-table-wrap animate-on-scroll">
-      <div class="metricas-table-title">KPIs Comerciais</div>
+    <div class="metricas-table-wrap reveal">
+      <div class="metricas-table-title">Comerciais</div>
       <table>
-        <thead><tr><th>Métrica</th><th>Mês 1</th><th>Mês 6</th><th>Ano 1</th></tr></thead>
+        <thead><tr><th>Indicador</th><th>Mês 1</th><th>Mês 3</th><th>Mês 6</th></tr></thead>
         <tbody>
-          <tr><td>Taxa de Ocupação</td><td>50%</td><td>80%</td><td>95%</td></tr>
-          <tr><td>Retenção de Clientes</td><td>80%</td><td>90%</td><td>95%</td></tr>
+          <tr><td>Taxa de ocupação de cotas</td><td>50%</td><td>80%</td><td>95%</td></tr>
+          <tr><td>Retenção de patrocinadores</td><td>80%</td><td>90%</td><td>95%</td></tr>
         </tbody>
       </table>
     </div>
 
-    <div class="metricas-table-wrap animate-on-scroll">
-      <div class="metricas-table-title">KPIs Digitais</div>
+    <div class="metricas-table-wrap reveal">
+      <div class="metricas-table-title">Digitais</div>
       <table>
-        <thead><tr><th>Métrica</th><th>Mês 1</th><th>Mês 6</th><th>Ano 1</th></tr></thead>
+        <thead><tr><th>Indicador</th><th>Mês 1</th><th>Mês 3</th><th>Mês 6</th></tr></thead>
         <tbody>
-          <tr><td>Views YouTube</td><td>50k</td><td>500k</td><td>2M+</td></tr>
-          <tr><td>Followers Instagram</td><td>5k</td><td>50k</td><td>150k+</td></tr>
-          <tr><td>Visitantes Website</td><td>10k</td><td>50k</td><td>200k+</td></tr>
-          <tr><td>Leads Capturados</td><td>500</td><td>5k</td><td>20k+</td></tr>
+          <tr><td>Views YouTube</td><td>50k</td><td>250k</td><td>500k</td></tr>
+          <tr><td>Seguidores Instagram</td><td>5k</td><td>25k</td><td>50k</td></tr>
+          <tr><td>Visitantes do portal</td><td>10k</td><td>30k</td><td>50k</td></tr>
+          <tr><td>Leads capturados</td><td>500</td><td>2.500</td><td>5.000</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </section>
-
-<div class="section-divider"></div>
 
 <!-- CTA FINAL -->
 <section class="cta-final" id="contato">
   <div class="container">
-    <div class="animate-on-scroll">
-      <div class="section-label">Próximo Passo</div>
-      <h2>Pronto para fazer parte<br>da <span class="text-gradient">referência em saúde</span> de MG?</h2>
-      <p>Uma oportunidade única de criar a maior plataforma de comunicação em saúde do estado. Vamos conversar.</p>
+    <div class="reveal">
+      <div class="eyebrow">Próximo Passo</div>
+      <h2>Pronto para integrar a <em>referência em saúde</em> de Minas?</h2>
+      <p>A primeira temporada estreia em 2 de agosto. Negociação de cotas em andamento. Vamos conversar.</p>
       <div class="cta-buttons">
         <a href="mailto:contato@saudeemfocominas.com.br" class="btn-primary">Solicitar Proposta Completa</a>
         <a href="tel:+5511995545900" class="btn-secondary">Agendar Reunião</a>
@@ -1462,7 +1196,7 @@
         </div>
         <div class="contact-item">
           <div class="contact-label">Instagram</div>
-          <div class="contact-value">@saudeemfocominas</div>
+          <div class="contact-value">@focoemsaudeminas</div>
         </div>
       </div>
     </div>
@@ -1472,45 +1206,38 @@
 <!-- FOOTER -->
 <footer>
   <div class="container">
-    <div class="footer-logo">
-      <svg viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M2 20 Q8 20 14 20 Q18 20 22 18 Q26 16 28 12 Q30 8 32 6 L36 20 Q38 28 40 32 Q42 36 44 34 Q46 30 48 20 Q50 10 52 8 Q54 6 56 12 Q58 18 60 20 Q64 22 70 20 Q76 20 82 20" stroke="url(#footGrad)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="84" cy="20" r="2.5" fill="#00E676" opacity="0.8"/>
-        <defs><linearGradient id="footGrad" x1="2" y1="20" x2="84" y2="20"><stop stop-color="#00C853"/><stop offset="0.5" stop-color="#00E676"/><stop offset="1" stop-color="#69F0AE"/></linearGradient></defs>
-      </svg>
+    <div class="footer-marks">
+      <div class="footer-mark footer-mark-band">
+        <div class="footer-mark-label">Veiculado por · Band Minas</div>
+        <img src="assets/logo-band.png" alt="Band">
+      </div>
+      <div class="footer-mark footer-mark-foco">
+        <div class="footer-mark-label">Programa</div>
+        <img src="assets/logo-foco.png" alt="Foco em Saúde Minas">
+      </div>
     </div>
-    <p>Saúde em Foco Minas &copy; 2026. Todos os direitos reservados.</p>
-    <p style="margin-top:8px;">Versão 1.0 | Proposta Executiva Pronta para Investimento</p>
+    <p>Foco em Saúde Minas &copy; 2026 · Proposta executiva</p>
   </div>
 </footer>
 
-<!-- JS -->
 <script>
-  // Navbar scroll
   const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', () => {
     navbar.classList.toggle('scrolled', window.scrollY > 50);
   });
 
-  // Scroll reveal
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
+      if (entry.isIntersecting) entry.target.classList.add('visible');
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
-
-  // Smooth scroll for nav links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       e.preventDefault();
       const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 </script>
